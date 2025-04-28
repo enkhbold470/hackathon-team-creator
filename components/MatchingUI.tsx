@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import TinderCard from 'react-tinder-card';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Profiler } from 'node:inspector/promises';
 
 interface Profile {
   id: string;
@@ -30,12 +31,15 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
     [cards]
   );
 
-  const swiped = (direction: string, profile: Profile, index: number) => {
+  const swiped = (direction: string, profile: Profile) => {
     setLastDirection(direction);
-    setCards((prev) => prev.filter((p) => p.id !== profile.id));
 
     if (direction === 'right') onMatch(profile);
     else onPass(profile);
+  };
+
+  const outOfFrame = (profileId: string) => {
+    setCards(prev => prev.filter(p => p.id !== profileId));
   };
 
   const swipe = (dir: 'left' | 'right') => {
@@ -58,7 +62,8 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
           <TinderCard
             ref={childRefs[index]}
             key={profile.id}
-            onSwipe={(dir) => swiped(dir, profile, index)}
+            onSwipe={(dir) => swiped(dir, profile)}
+            onCardLeftScreen={() => outOfFrame(profile.id)}
             preventSwipe={[ 'up', 'down' ]}
           >
             <Card

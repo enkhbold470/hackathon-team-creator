@@ -46,7 +46,7 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
   if (cards.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500">No more profiles!</p>
+        <p className="text-gray-500 dark:text-gray-400">No more profiles!</p>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
                 <CardTitle className="text-xl">{profile.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{profile.bio}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{profile.bio}</p>
               </CardContent>
             </Card>
           </TinderCard>

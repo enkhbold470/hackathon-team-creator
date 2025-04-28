@@ -5,7 +5,8 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
  
 import { Button } from "@/components/ui/button"
-import MatchingUI from "@/components/MatchingUI";
+import MatchingUI from "@/components/MatchingUI"
+import { toast } from "sonner"
 
 function ModeToggle() {
   const { setTheme, theme } = useTheme()
@@ -46,12 +47,12 @@ export default function Home() {
   
   const handleMatch = (profile: any) => {
     setMatched((prev) => [...prev, profile.id])
-    console.log('Matched:', profile.name)
+    toast.success('You matched with ' + profile.name)
   };
   
   const handlePass = (profile: any) => {
     setPassed((prev) => [...prev, profile.id])
-    console.log('Passed:', profile.name)
+    toast('You passed ' + profile.name)
   };
 
   const remainingProfiles = PROFILES.filter(

@@ -5,9 +5,8 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
  
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 
-export function ModeToggle() {
+function ModeToggle() {
   const { setTheme, theme } = useTheme()
  
   return (
@@ -25,7 +24,7 @@ export default function Home() {
       <div className="flex w-full justify-end">
         <ModeToggle />
       </div>
-      This is the testing page aldskjflakdsjfladskjf
+      <h1 className="text-3xl font-bold">find your hackathon team!</h1>
     </main>
   );
 }

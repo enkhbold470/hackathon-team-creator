@@ -28,19 +28,19 @@ export default function Home() {
       id: '1',
       name: 'Alice',
       avatar: 'vercel.svg',
-      bio: 'Full-stack engineer who loves JavaScript & coffee.',
+      bio: 'test 1',
     },
     {
       id: '2',
       name: 'Bob',
       avatar: 'vercel.svg',
-      bio: 'UX designer obsessed with user flows and Figma.',
+      bio: 'test 2',
     },
     {
       id: '3',
       name: 'Carol',
       avatar: 'vercel.svg',
-      bio: 'Data scientist and AI enthusiast.',
+      bio: 'test 3',
     },
   ];
   

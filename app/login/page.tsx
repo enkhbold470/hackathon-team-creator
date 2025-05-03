@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   if (loggedIn) {
-    redirect("/dashboard");
+    redirect("/home");
   }
 
   return (

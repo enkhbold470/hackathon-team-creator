@@ -1,8 +1,14 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import TinderCard from 'react-tinder-card';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Profiler } from 'node:inspector/promises';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import React, { useEffect, useMemo, useState } from "react";
+import TinderCard from "react-tinder-card";
+import { toast } from "sonner";
 
 interface Profile {
   id: string;
@@ -13,14 +19,17 @@ interface Profile {
 
 interface MatchingUIProps {
   profiles: Profile[];
-  onMatch: (profile: Profile) => void;
-  onPass: (profile: Profile) => void;
 }
 
-export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass }: MatchingUIProps) {
+export default function MatchingUI({
+  profiles: initialProfiles,
+}: MatchingUIProps) {
   const [cards, setCards] = useState<Profile[]>(initialProfiles);
   const [currentIndex, setCurrentIndex] = useState(cards.length - 1);
   const [lastDirection, setLastDirection] = useState<string | null>(null);
+
+  const [matched, setMatched] = React.useState<string[]>([]);
+  const [passed, setPassed] = React.useState<string[]>([]);
 
   useEffect(() => {
     setCurrentIndex(cards.length - 1);
@@ -31,21 +40,35 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
     [cards]
   );
 
+  const handleMatch = (profile: any) => {
+    setMatched((prev) => [...prev, profile.id]);
+    toast.success("You matched with " + profile.name);
+  };
+
+  const handlePass = (profile: any) => {
+    setPassed((prev) => [...prev, profile.id]);
+    toast("You passed " + profile.name);
+  };
+
   const swiped = (direction: string, profile: Profile) => {
     setLastDirection(direction);
 
-    if (direction === 'right') onMatch(profile);
-    else onPass(profile);
+    if (direction === "right") handleMatch(profile);
+    else handlePass(profile);
   };
 
   const outOfFrame = (profileId: string) => {
-    setCards(prev => prev.filter(p => p.id !== profileId));
+    setCards((prev) => prev.filter((p) => p.id !== profileId));
   };
 
-  const swipe = (dir: 'left' | 'right') => {
+  const swipe = (dir: "left" | "right") => {
     if (currentIndex < 0 || !childRefs[currentIndex]?.current) return;
     childRefs[currentIndex].current.swipe(dir);
   };
+
+  const remainingProfiles = initialProfiles.filter(
+    (p) => !matched.includes(p.id) && !passed.includes(p.id)
+  );
 
   if (cards.length === 0) {
     return (
@@ -64,7 +87,7 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
             key={profile.id}
             onSwipe={(dir) => swiped(dir, profile)}
             onCardLeftScreen={() => outOfFrame(profile.id)}
-            preventSwipe={[ 'up', 'down' ]}
+            preventSwipe={["up", "down"]}
           >
             <Card
               className="w-80 h-96 overflow-hidden rounded-2xl shadow-lg absolute top-0 left-0 cursor-pointer select-none"
@@ -81,7 +104,9 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
                 <CardTitle className="text-xl">{profile.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{profile.bio}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {profile.bio}
+                </p>
               </CardContent>
             </Card>
           </TinderCard>
@@ -89,8 +114,16 @@ export default function MatchingUI({ profiles: initialProfiles, onMatch, onPass 
       </div>
 
       <CardFooter className="flex gap-4 mt-4">
-        <Button variant="outline" onClick={() => swipe('left')} className="cursor-pointer">Pass</Button>
-        <Button onClick={() => swipe('right')} className="cursor-pointer">Match</Button>
+        <Button
+          variant="outline"
+          onClick={() => swipe("left")}
+          className="cursor-pointer"
+        >
+          Pass
+        </Button>
+        <Button onClick={() => swipe("right")} className="cursor-pointer">
+          Match
+        </Button>
       </CardFooter>
     </div>
   );

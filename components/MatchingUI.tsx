@@ -11,6 +11,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import TinderCard from "react-tinder-card";
 import { toast } from "sonner";
+import styles from './MatchingUI.module.css';
 
 interface Profile {
   id: string;
@@ -33,6 +34,7 @@ export default function MatchingUI({
   const [matched, setMatched] = React.useState<string[]>([]);
   const [passed, setPassed] = React.useState<string[]>([]);
   const [lastAction, setLastAction] = React.useState<{ type: 'match' | 'pass', profile: Profile } | null>(null);
+  const [isFlashing, setIsFlashing] = React.useState(false);
 
   useEffect(() => {
     setCurrentIndex(cards.length - 1);
@@ -46,6 +48,8 @@ export default function MatchingUI({
   const handleMatch = (profile: Profile) => {
     setMatched((prev) => [...prev, profile.id]);
     setLastAction({ type: 'match', profile });
+    setIsFlashing(true);
+    setTimeout(() => setIsFlashing(false), 500); // Reset after animation
     toast.success("You matched with " + profile.name, {
       action: {
         label: "Undo",
@@ -117,6 +121,11 @@ export default function MatchingUI({
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
+      {isFlashing && (
+        <div 
+          className={`fixed inset-0 bg-green-500/10 pointer-events-none ${styles.flash}`}
+        />
+      )}
       <div className="relative w-80 h-96">
         {cards.map((profile, index) => (
           <TinderCard
@@ -129,13 +138,10 @@ export default function MatchingUI({
               className="w-80 h-96 overflow-hidden rounded-2xl shadow-lg absolute top-0 left-0 cursor-pointer select-none"
               style={{ zIndex: index }}
             >
-              <div className="relative w-full h-48">
-                <img
-                  src={profile.avatar}
-                  alt={profile.name}
-                  className="w-full h-full object-cover select-none"
-                />
-              </div>
+              <div 
+                className="relative w-full h-48 bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: `url(${profile.avatar})` }}
+              />
               <CardHeader>
                 <CardTitle className="text-xl">{profile.name}</CardTitle>
               </CardHeader>

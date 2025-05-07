@@ -57,7 +57,7 @@ export default function Home() {
         <div className="flex w-full justify-end">
           <ModeToggle />
         </div>
-        <h1 className="text-3xl font-bold">find your hackathon team!</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Swipe right to match, swipe left to pass.</p>
         <MatchingUI profiles={PROFILES} />
       </main>
     </div>

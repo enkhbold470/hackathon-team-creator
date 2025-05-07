@@ -32,6 +32,7 @@ export default function MatchingUI({
 
   const [matched, setMatched] = React.useState<string[]>([]);
   const [passed, setPassed] = React.useState<string[]>([]);
+  const [lastAction, setLastAction] = React.useState<{ type: 'match' | 'pass', profile: Profile } | null>(null);
 
   useEffect(() => {
     setCurrentIndex(cards.length - 1);
@@ -42,35 +43,69 @@ export default function MatchingUI({
     [cards]
   );
 
-  const handleMatch = (profile: any) => {
+  const handleMatch = (profile: Profile) => {
     setMatched((prev) => [...prev, profile.id]);
-    toast.success("You matched with " + profile.name);
+    setLastAction({ type: 'match', profile });
+    toast.success("You matched with " + profile.name, {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          setMatched((prev) => prev.filter(id => id !== profile.id));
+          setCards((prev) => {
+            if (!prev.some(p => p.id === profile.id)) {
+              return [...prev, profile];
+            }
+            return prev;
+          });
+          setLastAction(null);
+        },
+      },
+    });
   };
 
-  const handlePass = (profile: any) => {
+  const handlePass = (profile: Profile) => {
     setPassed((prev) => [...prev, profile.id]);
-    toast("You passed " + profile.name);
+    setLastAction({ type: 'pass', profile });
+    toast("You passed " + profile.name, {
+      action: {
+        label: "Undo",
+        onClick: () => {
+          setPassed((prev) => prev.filter(id => id !== profile.id));
+          setCards((prev) => {
+            if (!prev.some(p => p.id === profile.id)) {
+              return [...prev, profile];
+            }
+            return prev;
+          });
+          setLastAction(null);
+        },
+      },
+    });
   };
 
-  const swiped = (direction: string, profile: Profile) => {
+  const handleSwipe = (direction: string, profile: Profile) => {
     setLastDirection(direction);
 
-    if (direction === "right") handleMatch(profile);
-    else handlePass(profile);
-  };
-
-  const outOfFrame = (profileId: string) => {
-    setCards((prev) => prev.filter((p) => p.id !== profileId));
+    if (direction === "right") {
+      handleMatch(profile);
+    } else {
+      handlePass(profile);
+    }
+    setCards((prev) => prev.filter((p) => p.id !== profile.id));
   };
 
   const swipe = (dir: "left" | "right") => {
     if (currentIndex < 0 || !childRefs[currentIndex]?.current) return;
     childRefs[currentIndex].current.swipe(dir);
-  };
 
-  const remainingProfiles = initialProfiles.filter(
-    (p) => !matched.includes(p.id) && !passed.includes(p.id)
-  );
+    setLastDirection(dir);
+    if (dir === "right") {
+      handleMatch(cards[currentIndex]);
+    } else {
+      handlePass(cards[currentIndex]);
+    }
+    setCards((prev) => prev.filter((p) => p.id !== cards[currentIndex].id));
+  };
 
   if (cards.length === 0) {
     return (
@@ -87,8 +122,7 @@ export default function MatchingUI({
           <TinderCard
             ref={childRefs[index]}
             key={profile.id}
-            onSwipe={(dir) => swiped(dir, profile)}
-            onCardLeftScreen={() => outOfFrame(profile.id)}
+            onSwipe={(dir) => handleSwipe(dir, profile)}
             preventSwipe={["up", "down"]}
           >
             <Card

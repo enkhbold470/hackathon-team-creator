@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -71,9 +70,6 @@ export function LoginForm() {
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Log in</CardTitle>
-        <CardDescription>
-          Enter your credentials to access your account
-        </CardDescription>
       </CardHeader>
       <CardContent>
         {error && (

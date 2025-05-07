@@ -34,32 +34,19 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen">
       <header className="border-b flex justify-center">
-        <div className="container flex h-14 items-center max-w-6xl">
-          <div className="mr-4 flex">
+        <div className="container flex h-14 items-center">
+          <div className="mr-4 flex pl-3">
             <Link href="/home" className="flex items-center space-x-2">
               <span className="font-bold">DA Hacks 3.5</span>
             </Link>
           </div>
           <div className="flex flex-1 items-center justify-end space-x-2">
             <nav className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/search">
-                  <Search className="h-5 w-5" />
-                  <span className="sr-only">Search</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/messages">
-                  <MessageSquare className="h-5 w-5" />
-                  <span className="sr-only">Messages</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" asChild>
-                <Link href="/profile">
-                  <User className="h-5 w-5" />
-                  <span className="sr-only">Profile</span>
+              <Button variant="outline" asChild>
+                <Link href="/portal">
+                  Back to Portal
                 </Link>
               </Button>
             </nav>

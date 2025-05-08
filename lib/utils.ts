@@ -6,3 +6,4 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const loggedIn = true;
+export const portalLink = "https://deanzahacks.com/";

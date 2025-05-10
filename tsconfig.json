@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "types": ["node", "react", "react-dom", "@prisma/client"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "target": "ESNext",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -22,6 +23,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "hooks/useScreenSize.js",
+    "prisma"
+  ],
   "exclude": ["node_modules"]
 }

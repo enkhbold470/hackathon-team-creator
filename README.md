@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hackathon Dashboard
 
-## Getting Started
+A streamlined application for managing hackathon applications and participants.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- User authentication with Clerk
+- Application submission and management
+- Dynamic form configuration
+- Real-time auto-saving of form fields
+- Application status tracking
+
+## Project Structure
+
+```
+├── app/                  # Next.js application routes
+│   ├── api/              # API routes (consolidated)
+│   │   └── db/           # Database-related API endpoints
+├── components/           # React components
+│   ├── ui/               # UI components (using shadcn/ui)
+│   └── application*.tsx  # Application-specific components  
+├── lib/                  # Shared libraries and utilities
+│   ├── applicationData.ts # Form field configuration
+│   ├── prisma.ts         # Prisma client configuration
+├── prisma/               # Database schema
+├── public/               # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The API has been consolidated into a single route file with action-based routing:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- GET `/api/db?action=get-application&userId=123` - Retrieves an application
+- GET `/api/db?action=test-connection` - Tests database connectivity
+- POST `/api/db` with body `{ action: 'save-application', userId: '123', ...formData }` - Saves application data
+- POST `/api/db` with body `{ action: 'submit-application', userId: '123' }` - Submits an application
 
-## Learn More
+## Form Structure
 
-To learn more about Next.js, take a look at the following resources:
+The application form has been optimized for:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Better performance
+2. Simplified maintenance
+3. Easier field editing
+4. Real-time saving with visual feedback
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The form is dynamically generated from the configuration in `lib/applicationData.ts`, making it easy to:
 
-## Deploy on Vercel
+- Add/remove form fields
+- Change validation rules
+- Reorganize form sections
+- Modify field labels and descriptions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Install dependencies
+pnpm install
+
+# Setup database
+pnpm prisma:generate
+pnpm prisma:push
+
+# Start development server
+pnpm dev
+```
+
+## Optimizations
+
+The following optimizations have been implemented:
+
+1. **Consolidated API Routes**: Simplified API structure with action-based routing
+2. **Dynamic Form Rendering**: Generated from configuration for easier maintenance
+3. **Real-time Field Saving**: Immediate feedback with visual indicators
+4. **Reduced Initial Load Time**: Streamlined code and optimized form rendering
+5. **Improved Type Safety**: Better TypeScript typing throughout the application  

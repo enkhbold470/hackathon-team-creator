@@ -1,19 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { PrismaClient } from '@prisma/client';
-
-// Create a fresh instance of the Prisma client
-const prisma = new PrismaClient();
+import { Match } from "@/lib/types";
+import { prisma } from "@/lib/prisma";
 
 // Define match interface
-interface Match {
-  id: number;
-  user_id_1: string;
-  user_id_2: string;
-  status: string;
-  created_at: Date;
-  updated_at: Date;
-}
 
 export async function GET(request: NextRequest) {
   console.log('Matches API: GET request received');
@@ -30,7 +20,7 @@ export async function GET(request: NextRequest) {
     // Get the current user's profile
     console.log(`Matches API: Checking if user ${userId} has an application`);
     const currentProfile = await prisma.application.findUnique({
-      where: { userId },
+      where: { user_id: userId },
     });
 
     if (!currentProfile) {
@@ -59,7 +49,7 @@ export async function GET(request: NextRequest) {
       // Find users who have submitted applications but haven't been interacted with
       const potentialMatches = await prisma.application.findMany({
         where: {
-          userId: {
+          user_id: {
             notIn: interactedUserIds
           },
           status: 'submitted'
@@ -71,13 +61,13 @@ export async function GET(request: NextRequest) {
       
       return NextResponse.json({
         potentialMatches: potentialMatches.map(profile => ({
-          userId: profile.userId,
-          fullName: profile.fullName,
-          skillLevel: profile.skillLevel,
-          hackathonExperience: profile.hackathonExperience,
-          projectExperience: profile.projectExperience,
-          funFact: profile.funFact,
-          selfDescription: profile.selfDescription,
+          user_id: profile.user_id,
+          full_name: profile.full_name,
+          skill_level: profile.skill_level,
+          hackathon_experience: profile.hackathon_experience,
+          project_experience: profile.project_experience,
+          fun_fact: profile.fun_fact,
+          self_description: profile.self_description,
         }))
       });
     } else {
@@ -102,7 +92,7 @@ export async function GET(request: NextRequest) {
           
           // Get the other user's profile
           const otherUserProfile = await prisma.application.findUnique({
-            where: { userId: otherUserId },
+            where: { user_id: otherUserId },
           });
           
           // Check if this is a mutual match (both users interested in each other)
@@ -141,21 +131,21 @@ export async function GET(request: NextRequest) {
           
           return {
             id: match.id,
-            userId1: match.user_id_1,
-            userId2: match.user_id_2,
+            user_id_1: match.user_id_1,
+            user_id_2: match.user_id_2,
             status: match.status,
-            createdAt: match.created_at,
-            isMutualMatch,
-            isUserInterested,
-            isOtherInterested,
-            otherUser: otherUserProfile ? {
-              userId: otherUserId,
-              fullName: otherUserProfile.fullName,
-              skillLevel: otherUserProfile.skillLevel,
-              hackathonExperience: otherUserProfile.hackathonExperience,
-              projectExperience: otherUserProfile.projectExperience,
-              funFact: otherUserProfile.funFact,
-              selfDescription: otherUserProfile.selfDescription,
+            created_at: match.created_at,
+            is_mutual_match: isMutualMatch,
+            is_user_interested: isUserInterested,
+            is_other_interested: isOtherInterested,
+            other_user: otherUserProfile ? {
+              user_id: otherUserId,
+              full_name: otherUserProfile.full_name,
+              skill_level: otherUserProfile.skill_level,
+              hackathon_experience: otherUserProfile.hackathon_experience,
+              project_experience: otherUserProfile.project_experience,
+              fun_fact: otherUserProfile.fun_fact,
+              self_description: otherUserProfile.self_description,
             } : null,
           };
         })

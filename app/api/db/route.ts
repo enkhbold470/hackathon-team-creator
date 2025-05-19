@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
             status: 'submitted'
           },
           orderBy: {
-            updatedAt: 'desc'
+            updated_at: 'desc'
           }
         });
         
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       case 'get-application':
         console.log(`Looking up application for userId: ${userId}`);
         const application = await prisma.application.findUnique({
-          where: { userId }
+          where: { user_id: userId }
         });
         console.log(`Application found: ${!!application}`);
         return NextResponse.json({ application });
@@ -83,14 +83,14 @@ export async function GET(request: NextRequest) {
           // Find all matches where this user has interacted (either passed or connected)
           const interactions = await prisma.match.findMany({
             where: {
-              userId1: userId
+              user_id_1: userId
             }
           });
           
           console.log(`Found ${interactions.length} interactions for user ${userId}`);
           
           // Extract the user IDs this user has interacted with
-          const interactedUserIds = interactions.map(match => match.userId2);
+            const interactedUserIds = interactions.map(match => match.user_id_2);
           
           return NextResponse.json({
             success: true,
@@ -140,46 +140,46 @@ export async function POST(request: NextRequest) {
         try {
           // Single database operation with upsert
           const application = await prisma.application.upsert({
-            where: { userId: userIdStr },
+            where: { user_id: userIdStr },
             update: {
               cwid: data.cwid,
-              fullName: data.full_name,
+              full_name: data.full_name,
               discord: data.discord,
-              skillLevel: data.skill_level,
-              hackathonExperience: data.hackathon_experience,
-              hearAboutUs: data.hear_about_us,
-              whyAttend: data.why_attend,
-              projectExperience: data.project_experience,
-              futurePlans: data.future_plans,
-              funFact: data.fun_fact,
-              selfDescription: data.self_description,
+              skill_level: data.skill_level,
+              hackathon_experience: data.hackathon_experience,
+              hear_about_us: data.hear_about_us,
+              why_attend: data.why_attend,
+                project_experience: data.project_experience,
+              future_plans: data.future_plans,
+              fun_fact: data.fun_fact,
+              self_description: data.self_description,
               links: data.links,
               teammates: data.teammates,
-              referralEmail: data.referral_email,
-              dietaryRestrictionsExtra: data.dietary_restrictions_extra,
-              tshirtSize: data.tshirt_size,
-              agreeToTerms: data.agree_to_terms || false,
+              referral_email: data.referral_email,
+              dietary_restrictions_extra: data.dietary_restrictions_extra,
+              tshirt_size: data.tshirt_size,
+              agree_to_terms: data.agree_to_terms || false,
               status: data.status || 'in_progress'
             },
             create: {
-              userId: userIdStr,
+              user_id: userIdStr,
               cwid: data.cwid,
-              fullName: data.full_name,
+              full_name: data.full_name,
               discord: data.discord,
-              skillLevel: data.skill_level,
-              hackathonExperience: data.hackathon_experience,
-              hearAboutUs: data.hear_about_us,
-              whyAttend: data.why_attend,
-              projectExperience: data.project_experience,
-              futurePlans: data.future_plans,
-              funFact: data.fun_fact,
-              selfDescription: data.self_description,
+              skill_level: data.skill_level,
+              hackathon_experience: data.hackathon_experience,
+              hear_about_us: data.hear_about_us,
+              why_attend: data.why_attend,
+              project_experience: data.project_experience,
+              future_plans: data.future_plans,
+              fun_fact: data.fun_fact,
+              self_description: data.self_description,
               links: data.links,
               teammates: data.teammates,
-              referralEmail: data.referral_email,
-              dietaryRestrictionsExtra: data.dietary_restrictions_extra,
-              tshirtSize: data.tshirt_size,
-              agreeToTerms: data.agree_to_terms || false,
+              referral_email: data.referral_email,
+              dietary_restrictions_extra: data.dietary_restrictions_extra,
+              tshirt_size: data.tshirt_size,
+              agree_to_terms: data.agree_to_terms || false,
               status: data.status || 'in_progress'
             }
           });
@@ -195,7 +195,7 @@ export async function POST(request: NextRequest) {
       case 'submit-application': {
         console.log(`Submitting application for userId: ${userIdStr}`);
         const application = await prisma.application.update({
-          where: { userId: userIdStr },
+          where: { user_id: userIdStr },
           data: { status: 'submitted' }
         });
         
@@ -214,11 +214,11 @@ export async function POST(request: NextRequest) {
 
         // Check if both users have applications
         const userApplication = await prisma.application.findUnique({ 
-          where: { userId: userIdStr } 
+          where: { user_id: userIdStr } 
         });
         
         const targetApplication = await prisma.application.findUnique({ 
-          where: { userId: targetUserId } 
+          where: { user_id: targetUserId } 
         });
         
         console.log(`User application found: ${!!userApplication}, Target application found: ${!!targetApplication}`);
@@ -232,17 +232,17 @@ export async function POST(request: NextRequest) {
           // Use upsert instead of create to handle existing matches
           const match = await prisma.match.upsert({
             where: {
-              userId1_userId2: {
-                userId1: userIdStr,
-                userId2: targetUserId
+              user_id_1_user_id_2: {
+                user_id_1: userIdStr,
+                user_id_2: targetUserId
               }
             },
             update: {
               status: status
             },
             create: {
-              userId1: userIdStr,
-              userId2: targetUserId,
+              user_id_1: userIdStr,
+              user_id_2: targetUserId,
               status: status
             }
           });

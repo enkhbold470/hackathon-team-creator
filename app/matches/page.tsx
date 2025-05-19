@@ -8,28 +8,13 @@ import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ThumbsDown, ThumbsUp, MessageCircle } from "lucide-react"
-
-interface MatchedUser {
-  userId: string;
-  fullName: string;
-  skillLevel: string;
-  hackathonExperience: string;
-  projectExperience: string;
-  funFact: string;
-  selfDescription: string;
-}
-
-interface Match {
-  id: number;
-  userId1: string;
-  userId2: string;
-  status: string;
-  createdAt: Date;
-  isMutualMatch: boolean;
-  isUserInterested: boolean;
-  isOtherInterested: boolean;
-  otherUser: MatchedUser | null;
-}
+import { MatchedUser, Match } from "@/lib/types"
+import LoadingComponent from "./components/LoadingComponent"
+import ErrorComponent from "./components/ErrorComponent"
+import NoMatchesComponent from "./components/NoMatchesComponent"
+import PotentialMatchCard from "./components/PotentialMatchCard"
+import MatchCard from "./components/MatchCard"
+import PendingMatchCard from "./components/PendingMatchCard"
 
 export default function MatchesPage() {
   const [matches, setMatches] = useState<Match[]>([])
@@ -167,30 +152,16 @@ export default function MatchesPage() {
   };
 
   if (loading && loadingPotentials) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    )
+    return <LoadingComponent />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-medium mb-2">Error</h2>
-          <p className="text-muted-foreground">{error}</p>
-          <Button onClick={() => window.location.reload()} className="mt-4">
-            Try Again
-          </Button>
-        </div>
-      </div>
-    )
+    return <ErrorComponent error={error} onRetry={() => window.location.reload()} />;
   }
 
   const currentPotentialMatch = potentialMatches[currentPotentialMatchIndex];
-  const mutualMatches = matches.filter(match => match.isMutualMatch);
-  const pendingMatches = matches.filter(match => match.isUserInterested && !match.isMutualMatch);
+  const mutualMatches = matches.filter(match => match.is_mutual_match);
+  const pendingMatches = matches.filter(match => match.is_user_interested && !match.is_mutual_match);
 
   return (
     <div className="min-h-screen pb-20">
@@ -214,63 +185,16 @@ export default function MatchesPage() {
                 <p>Finding potential teammates...</p>
               </div>
             ) : potentialMatches.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-96 text-center">
-                <h2 className="text-xl font-medium mb-2">No more potential matches</h2>
-                <p className="text-muted-foreground">
-                  Check back later for more potential teammates.
-                </p>
-              </div>
+              <NoMatchesComponent 
+                title="No more potential matches"
+                message="Check back later for more potential teammates."
+              />
             ) : (
-              <div className="relative h-[500px]">
-                <Card className="w-full h-full flex flex-col">
-                  <CardHeader>
-                    <CardTitle>{currentPotentialMatch?.fullName || "Potential Teammate"}</CardTitle>
-                    <CardDescription>Swipe right if interested, left to pass</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow overflow-auto">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="text-sm font-medium">Skill Level</h3>
-                        <p>{currentPotentialMatch?.skillLevel || "Not specified"}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Hackathon Experience</h3>
-                        <p>{currentPotentialMatch?.hackathonExperience || "Not specified"}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Project Experience</h3>
-                        <p>{currentPotentialMatch?.projectExperience || "Not specified"}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">About Me</h3>
-                        <p>{currentPotentialMatch?.selfDescription || "Not specified"}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium">Fun Fact</h3>
-                        <p>{currentPotentialMatch?.funFact || "Not specified"}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      className="rounded-full w-12 h-12"
-                      onClick={() => handleAction(currentPotentialMatch.userId, 'pass')}
-                    >
-                      <ThumbsDown className="h-5 w-5" />
-                    </Button>
-                    <Button 
-                      variant="default" 
-                      size="icon"
-                      className="rounded-full w-12 h-12 bg-green-500 hover:bg-green-600"
-                      onClick={() => handleAction(currentPotentialMatch.userId, 'interested')}
-                    >
-                      <ThumbsUp className="h-5 w-5" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
+              <PotentialMatchCard 
+                potentialMatch={currentPotentialMatch}
+                onAction={handleAction}
+                loading={loadingPotentials}
+              />
             )}
           </TabsContent>
           
@@ -279,49 +203,15 @@ export default function MatchesPage() {
               {mutualMatches.length > 0 ? (
                 <>
                   <h2 className="text-lg font-medium">Your Matches</h2>
-                  {mutualMatches.map((match) => {
-                    const otherUser = match.otherUser;
-                    
-                    if (!otherUser) {
-                      return null;
-                    }
-                    
-                    return (
-                      <Card key={match.id}>
-                        <CardHeader>
-                          <CardTitle>{otherUser.fullName || "Teammate"}</CardTitle>
-                          <CardDescription>You've matched!</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div>
-                            <h3 className="text-sm font-medium">Skill Level</h3>
-                            <p>{otherUser.skillLevel || "Not specified"}</p>
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-medium">Hackathon Experience</h3>
-                            <p>{otherUser.hackathonExperience || "Not specified"}</p>
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-medium">Project Experience</h3>
-                            <p>{otherUser.projectExperience || "Not specified"}</p>
-                          </div>
-                        </CardContent>
-                        <CardFooter>
-                          <Button className="w-full" variant="default">
-                            <MessageCircle className="mr-2 h-4 w-4" /> Contact
-                          </Button>
-                        </CardFooter>
-                      </Card>
-                    )
-                  })}
+                  {mutualMatches.map((match) => (
+                    <MatchCard key={match.id} match={match} />
+                  ))}
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-                  <h2 className="text-xl font-medium mb-2">No matches yet</h2>
-                  <p className="text-muted-foreground">
-                    Start swiping to find your dream team!
-                  </p>
-                </div>
+                <NoMatchesComponent
+                  title="No matches yet"
+                  message="Start reacting to find your dream team!"
+                />
               )}
 
               {pendingMatches.length > 0 && (
@@ -330,32 +220,9 @@ export default function MatchesPage() {
                   <p className="text-sm text-muted-foreground">
                     You've shown interest in these users. Waiting for them to respond.
                   </p>
-                  {pendingMatches.map((match) => {
-                    const otherUser = match.otherUser;
-                    
-                    if (!otherUser) {
-                      return null;
-                    }
-                    
-                    return (
-                      <Card key={match.id} className="bg-muted">
-                        <CardHeader>
-                          <CardTitle>{otherUser.fullName || "Potential Teammate"}</CardTitle>
-                          <CardDescription>Waiting for response</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div>
-                            <h3 className="text-sm font-medium">Skill Level</h3>
-                            <p>{otherUser.skillLevel || "Not specified"}</p>
-                          </div>
-                          <div>
-                            <h3 className="text-sm font-medium">Hackathon Experience</h3>
-                            <p>{otherUser.hackathonExperience || "Not specified"}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )
-                  })}
+                  {pendingMatches.map((match) => (
+                    <PendingMatchCard key={match.id} match={match} />
+                  ))}
                 </>
               )}
             </div>

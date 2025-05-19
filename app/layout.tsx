@@ -1,38 +1,61 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner"
-
-const inter = Inter({ subsets: ["latin"] });
-
+import type React from "react"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import type { Metadata } from "next"
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from '@clerk/nextjs'
+const inter = Inter({ subsets: ["latin"] })
+import { Toaster } from "@/components/ui/toaster"
 export const metadata: Metadata = {
-  title: "Hackathon Team Creator",
-  description: "Create a team for your hackathon",
-};
+  title: "HackMatch - Find Your Perfect Hackathon Teammate",
+  description: "Match with the perfect teammates for your next hackathon",
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
+    <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} subpixel-antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          value={{
-            light: "light",
-            dark: "dark",
-          }}
-        >
+
+      <body className={inter.className}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} disableTransitionOnChange>
+
+      <header className="flex justify-end gap-4">
+        <SignedOut>
+          <div className="flex gap-2">
+            <div className="border border-border rounded-full p-2">
+              <SignInButton />
+            </div>
+            <div className="border border-border rounded-full p-2">
+              <SignUpButton />
+            </div>
+          </div>
+        </SignedOut>
+        {/* <SignedIn> */}
+          {/* <div className="border border-border rounded-full p-2">
+            <UserButton />
+          </div> */}
+        {/* </SignedIn> */}
+      
+      </header>
           {children}
-          <Toaster position="top-center" visibleToasts={1} duration={3000} />
-        </ThemeProvider>
+       
+       
+      <Toaster />
+      </ThemeProvider>
       </body>
+
     </html>
-  );
+    </ClerkProvider>
+  )
 }

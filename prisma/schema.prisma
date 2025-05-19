@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id                        Int      @id @default(autoincrement())
+  user_id                   String   @map("user_id") @unique
+  cwid                      String?
+  full_name                  String?  @map("full_name")
+  discord                   String?
+  skill_level                String?  @map("skill_level")
+  hackathon_experience       String?  @map("hackathon_experience")
+  hear_about_us               String?  @map("hear_about_us")
+  why_attend                 String?  @map("why_attend")
+  project_experience         String?  @map("project_experience")
+  future_plans               String?  @map("future_plans")
+  fun_fact                   String?  @map("fun_fact")
+  self_description           String?  @map("self_description")
+  links                     String?
+  teammates                 String?
+  referral_email             String?  @map("referral_email")
+  dietary_restrictions_extra  String?  @map("dietary_restrictions_extra")
+  tshirt_size                String?  @map("tshirt_size")
+  agree_to_terms              Boolean  @default(false) @map("agree_to_terms")
+  status                    String   @default("not_started")
+  created_at                 DateTime @default(now()) @map("created_at")
+  updated_at                 DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  matches_as_user1            Match[]  @relation("User1")
+  matches_as_user2            Match[]  @relation("User2")
+
+  @@map("applications")
+}
+
+model Match {
+  id        Int      @id @default(autoincrement())
+  user_id_1   String   @map("user_id_1")
+  user_id_2   String   @map("user_id_2") 
+  status    String   // "interested", "passed", "matched"
+  created_at DateTime @default(now()) @map("created_at")
+  updated_at DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  user1     Application @relation("User1", fields: [user_id_1], references: [user_id])
+  user2     Application @relation("User2", fields: [user_id_2], references: [user_id])
+
+  // Ensure that we can't have duplicate matches between the same users
+  @@unique([user_id_1, user_id_2])
+  @@map("matches")
+}

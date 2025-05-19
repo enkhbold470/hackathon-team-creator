@@ -14,7 +14,7 @@ import {
 const inter = Inter({ subsets: ["latin"] })
 import { Toaster } from "@/components/ui/toaster"
 export const metadata: Metadata = {
-  title: "HackMatch - Find Your Perfect Hackathon Teammate",
+  title: "Dahacks HackMatch - Find Your Perfect Hackathon Teammate",
   description: "Match with the perfect teammates for your next hackathon",
 }
 
@@ -50,7 +50,7 @@ export default function RootLayout({
       </header>
           {children}
        
-       
+
       <Toaster />
       </ThemeProvider>
       </body>

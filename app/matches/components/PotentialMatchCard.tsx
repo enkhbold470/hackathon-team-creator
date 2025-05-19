@@ -2,6 +2,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { MatchedUser } from "@/lib/types";
+import { motion } from "framer-motion"; // Import framer-motion
+import { MessageCircleHeart } from "lucide-react";
 
 interface PotentialMatchCardProps {
   potentialMatch: MatchedUser | undefined;
@@ -23,18 +25,23 @@ export default function PotentialMatchCard({
   }
   
   if (!potentialMatch) {
-     return (
+    return (
       <div className="flex flex-col items-center justify-center h-96 text-center">
         <h2 className="text-xl font-medium mb-2">No more potential matches</h2>
         <p className="text-muted-foreground">
           Check back later for more potential teammates.
         </p>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="relative h-[500px]">
+    <motion.div 
+      className="relative h-[500px]" 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+    >
       <Card className="w-full h-full flex flex-col">
         <CardHeader>
           <CardTitle>{"Potential Teammate ID: " + potentialMatch.user_id.slice(10, 15)}</CardTitle>
@@ -42,47 +49,56 @@ export default function PotentialMatchCard({
         </CardHeader>
         <CardContent className="flex-grow overflow-auto">
           <div className="space-y-4">
-            <div>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-sm font-medium">Skill Level</h3>
-              <p>{potentialMatch?.skill_level || "Not specified"}</p>
             </div>
-            <div>
-              <h3 className="text-sm font-medium">Hackathon Experience</h3>
-              <p>{potentialMatch?.hackathon_experience || "Not specified"}</p>
+            <p>{potentialMatch?.skill_level || "Not specified"}</p>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
+              <h3 className="text-sm font-bold">Hackathon Experience</h3>
             </div>
-            <div>
+            <p>{potentialMatch?.hackathon_experience || "Not specified"}</p>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-sm font-medium">Project Experience</h3>
-              <p>{potentialMatch?.project_experience || "Not specified"}</p>
             </div>
-            <div>
+            <p>{potentialMatch?.project_experience || "Not specified"}</p>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-sm font-medium">About Me</h3>
-              <p>{potentialMatch?.self_description || "Not specified"}</p>
             </div>
-            <div>
-              <h3 className="text-sm font-medium">Fun Fact</h3>
-              <p>{potentialMatch?.fun_fact || "Not specified"}</p>
+            <p>{potentialMatch?.self_description || "Not specified"}</p>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
+              <div className="text-sm font-medium">Fun Fact</div>
             </div>
+            <p>{potentialMatch?.fun_fact || "Not specified"}</p>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button 
-            variant="outline" 
-            size="icon"
-            className="rounded-full w-12 h-12"
-            onClick={() => onAction(potentialMatch.user_id, 'pass')}
-          >
-            <ThumbsDown className="h-5 w-5" />
-          </Button>
-          <Button 
-            variant="default" 
-            size="icon"
-            className="rounded-full w-12 h-12 bg-green-500 hover:bg-green-600"
-            onClick={() => onAction(potentialMatch.user_id, 'interested')}
-          >
-            <ThumbsUp className="h-5 w-5" />
-          </Button>
+          <motion.div whileTap={{ scale: 1.4 }} transition={{ type: "spring", stiffness: 300 }}> {/* Add animation on button press */}
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="rounded-full w-12 h-12"
+              onClick={() => onAction(potentialMatch.user_id, 'pass')}
+            >
+              <ThumbsDown className="h-5 w-5" />
+            </Button>
+          </motion.div>
+          <motion.div whileTap={{ scale: 1.4 }} transition={{ type: "spring", stiffness: 300 }}> {/* Add animation on button press */}
+            <Button 
+              variant="default" 
+              size="icon"
+              className="rounded-full w-12 h-12 bg-green-500 hover:bg-green-600"
+              onClick={() => onAction(potentialMatch.user_id, 'interested')}
+            >
+              <ThumbsUp className="h-5 w-5" />
+            </Button>
+          </motion.div>
         </CardFooter>
       </Card>
-    </div>
+    </motion.div>
   );
 } 

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { UserButton } from "@/components/auth/auth-placeholder"
-import { toast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { motion } from "framer-motion" // Import framer-motion
 
 import { MatchedUser, Match } from "@/lib/types"
 import LoadingComponent from "./components/LoadingComponent"
@@ -22,7 +23,7 @@ export default function MatchesPage() {
   const [loadingPotentials, setLoadingPotentials] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("discover")
-
+  const { toast } = useToast()
   // Fetch matches
   useEffect(() => {
     const fetchMatches = async () => {
@@ -162,7 +163,7 @@ export default function MatchesPage() {
   const pendingMatches = matches.filter(match => match.is_user_interested && !match.is_mutual_match);
 
   return (
-    <div className="min-h-screen pb-20">
+    <motion.div className="min-h-screen pb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <header className="p-4 flex justify-between items-center border-b border-border">
         <div className="text-xl font-bold text-primary">HackMatch 
           <span className="text-sm text-muted-foreground font-normal border border-border rounded-full mx-2 px-2 py-1">BETA</span>
@@ -229,6 +230,6 @@ export default function MatchesPage() {
       </main>
 
       <Navigation />
-    </div>
+    </motion.div>
   )
 }

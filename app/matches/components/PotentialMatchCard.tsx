@@ -18,29 +18,39 @@ export default function PotentialMatchCard({
 }: PotentialMatchCardProps) {
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-center h-96"
+      >
         <p>Finding potential teammates...</p>
-      </div>
+      </motion.div>
     );
   }
   
   if (!potentialMatch) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-center">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-col items-center justify-center h-96 text-center"
+      >
         <h2 className="text-xl font-medium mb-2">No more potential matches</h2>
         <p className="text-muted-foreground">
           Check back later for more potential teammates.
         </p>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <motion.div 
-      className="relative h-[500px]" 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="relative h-[500px]"
     >
       <Card className="w-full h-full flex flex-col">
         <CardHeader>
@@ -49,29 +59,34 @@ export default function PotentialMatchCard({
         </CardHeader>
         <CardContent className="flex-grow overflow-auto">
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-sm font-medium">Skill Level</h3>
             </div>
-            <p>{potentialMatch?.skill_level || "Not specified"}</p>
-            <div className="flex items-center gap-2">
+            <p>{potentialMatch?.skill_level || "Not specified"}</p> */}
+            {/* <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-sm font-bold">Hackathon Experience</h3>
             </div>
-            <p>{potentialMatch?.hackathon_experience || "Not specified"}</p>
+            <p>{potentialMatch?.hackathon_experience || "Not specified"}</p> */}
             <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
-              <h3 className="text-sm font-medium">Project Experience</h3>
+              <h3 className="text-base font-bold">Project Experience</h3>
             </div>
             <p>{potentialMatch?.project_experience || "Not specified"}</p>
             <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
-              <h3 className="text-sm font-medium">About Me</h3>
+              <h3 className="text-base font-bold">What I want to build</h3>
+            </div>
+            <p>{potentialMatch?.future_plans || "Not specified"}</p>
+            <div className="flex items-center gap-2">
+              <MessageCircleHeart className="h-5 w-5" />
+              <h3 className="text-base font-bold">Self-Description</h3>
             </div>
             <p>{potentialMatch?.self_description || "Not specified"}</p>
             <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
-              <div className="text-sm font-medium">Fun Fact</div>
+              <h3 className="text-base font-bold">Fun Fact</h3>
             </div>
             <p>{potentialMatch?.fun_fact || "Not specified"}</p>
           </div>

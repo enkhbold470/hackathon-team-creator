@@ -6,6 +6,7 @@ export interface MatchedUser {
     project_experience: string;
     fun_fact: string;
     self_description: string;
+    future_plans: string;
   }
   
   export interface Match {

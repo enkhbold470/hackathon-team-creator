@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 interface ErrorComponentProps {
   error: string | null;
@@ -7,7 +8,12 @@ interface ErrorComponentProps {
 
 export default function ErrorComponent({ error, onRetry }: ErrorComponentProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      transition={{ duration: 0.5 }}
+      className="min-h-screen flex items-center justify-center"
+    >
       <div className="text-center">
         <h2 className="text-xl font-medium mb-2">Error</h2>
         <p className="text-muted-foreground">{error}</p>
@@ -15,6 +21,6 @@ export default function ErrorComponent({ error, onRetry }: ErrorComponentProps) 
           Try Again
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 } 

@@ -39,3 +39,10 @@ export function debounce<T extends (...args: any[]) => any>(func: T, wait: numbe
 
 
 export const portalLink = "https://portal.deanzahacks.com"
+
+
+
+
+export const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text)
+}

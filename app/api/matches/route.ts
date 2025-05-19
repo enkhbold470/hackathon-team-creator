@@ -36,12 +36,13 @@ export async function GET(request: NextRequest) {
       console.log(`Matches API: Fetching potential matches for user ${userId}`);
       
       // Find users the current user has already interacted with
-      const interactedUsers = await prisma.$queryRaw<{user_id_2: string}[]>`
-        SELECT user_id_2 FROM matches 
-        WHERE user_id_1 = ${userId}
-      `;
+      // Ensure this query correctly gets user_id_2 when user_id_1 is the current user
+      const interactedMatches = await prisma.match.findMany({
+        where: { user_id_1: userId },
+        select: { user_id_2: true }
+      });
       
-      const interactedUserIds = interactedUsers.map(u => u.user_id_2);
+      const interactedUserIds = interactedMatches.map(u => u.user_id_2);
       
       // Add the current user's ID to exclude from potential matches
       interactedUserIds.push(userId);
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
           user_id: {
             notIn: interactedUserIds
           },
-          status: 'submitted'
+          status: 'submitted' // Only consider submitted applications
         },
         take: 10  // Limit the number of potential matches
       });
@@ -72,88 +73,92 @@ export async function GET(request: NextRequest) {
         }))
       });
     } else {
-      // Return existing matches (both mutual and one-sided)
-      console.log(`Matches API: Fetching matches for user ${userId}`);
+      // Return existing matches (both mutual and one-sided initiated by the user)
+      console.log(`Matches API: Fetching existing matches for user ${userId}`);
       
-      // Using raw SQL to fetch all matches where the user is involved
-      const matchesResult = await prisma.$queryRaw<Match[]>`
-        SELECT * FROM matches 
-        WHERE (user_id_1 = ${userId} OR user_id_2 = ${userId})
-        AND (status = 'matched' OR status = 'interested')
-      `;
+      const dbMatchRecords = await prisma.match.findMany({
+        where: {
+          OR: [{ user_id_1: userId }, { user_id_2: userId }],
+          status: { in: ['matched', 'interested'] }
+        },
+        orderBy: {
+          created_at: 'desc'
+        }
+      });
 
-      console.log(`Matches API: Found ${matchesResult.length} matches`);
-      
-      // Format matches to make them easier to use in the client
-      const formattedMatches = await Promise.all(
-        matchesResult.map(async (match) => {
-          // Determine which user in the match is the other user
-          const otherUserId = match.user_id_1 === userId ? match.user_id_2 : match.user_id_1;
-          console.log(`Matches API: Getting details for matched user ${otherUserId}`);
-          
-          // Get the other user's profile
-          const otherUserProfile = await prisma.application.findUnique({
-            where: { user_id: otherUserId },
+      const responseMatches: Match[] = [];
+      const processedMutualPartnerIds = new Set<string>();
+
+      for (const record of dbMatchRecords) {
+        const otherUserId = record.user_id_1 === userId ? record.user_id_2 : record.user_id_1;
+
+        // If it's a mutual match and we've already processed this partner, skip.
+        if (record.status === 'matched' && processedMutualPartnerIds.has(otherUserId)) {
+          continue;
+        }
+
+        const otherUserApplication = await prisma.application.findUnique({
+          where: { user_id: otherUserId },
+        });
+
+        if (!otherUserApplication) {
+          console.warn(`Matches API: Profile for other user ${otherUserId} not found. Skipping match ID ${record.id}.`);
+          continue; // Skip if the other user's profile doesn't exist
+        }
+
+        const otherUserDetail: MatchedUser = {
+          user_id: otherUserApplication.user_id,
+          full_name: otherUserApplication.full_name || "Anonymous User",
+          skill_level: otherUserApplication.skill_level || "Not specified",
+          hackathon_experience: otherUserApplication.hackathon_experience || "Not specified",
+          project_experience: otherUserApplication.project_experience || "Not specified",
+          fun_fact: otherUserApplication.fun_fact || "Not specified",
+          self_description: otherUserApplication.self_description || "Not specified",
+          future_plans: otherUserApplication.future_plans || "Not specified",
+          discord: otherUserApplication.discord || "Not specified",
+          links: otherUserApplication.links || "Not specified",
+        };
+        
+        const isMutual = record.status === 'matched';
+        // User is interested if they initiated an 'interested' record, or if it's a mutual 'matched' record.
+        const isCurrentUserInterested = (record.user_id_1 === userId && record.status === 'interested') || isMutual;
+        // Other party is interested if they initiated an 'interested' record (where current user is user_id_2), or it's mutual.
+        const isOtherPartyInterested = (record.user_id_2 === userId && record.status === 'interested') || isMutual;
+
+        if (isMutual) {
+          responseMatches.push({
+            id: record.id, // Keep as number, assuming lib/types.Match.id is number
+            user_id_1: record.user_id_1,
+            user_id_2: record.user_id_2,
+            status: record.status,
+            created_at: record.created_at,
+            is_mutual_match: true,
+            is_user_interested: true, // For a mutual match, current user was interested
+            is_other_interested: true, // And so was the other party
+            other_user: otherUserDetail,
           });
-          
-          // Check if this is a mutual match (both users interested in each other)
-          let isMutualMatch = match.status === 'matched';
-          let isUserInterested = match.user_id_1 === userId && match.status === 'interested';
-          let isOtherInterested = match.user_id_2 === userId && match.status === 'interested';
-          
-          // If this match shows the current user is interested in the other user,
-          // check if there's a reciprocal match
-          if (match.status === 'interested' && match.user_id_1 === userId) {
-            const reciprocalMatch = await prisma.$queryRaw<Match[]>`
-              SELECT * FROM matches 
-              WHERE user_id_1 = ${otherUserId}
-              AND user_id_2 = ${userId}
-              AND status = 'interested'
-            `;
-            
-            if (reciprocalMatch.length > 0) {
-              isMutualMatch = true;
-              
-              // Update this match to 'matched' status since both users are interested
-              await prisma.$executeRaw`
-                UPDATE matches 
-                SET status = 'matched' 
-                WHERE id = ${match.id}
-              `;
-              
-              // Also update the reciprocal match
-              await prisma.$executeRaw`
-                UPDATE matches 
-                SET status = 'matched' 
-                WHERE id = ${reciprocalMatch[0].id}
-              `;
-            }
-          }
-          
-          return {
-            id: match.id,
-            user_id_1: match.user_id_1,
-            user_id_2: match.user_id_2,
-            status: match.status,
-            created_at: match.created_at,
-            is_mutual_match: isMutualMatch,
-            is_user_interested: isUserInterested,
-            is_other_interested: isOtherInterested,
-            other_user: otherUserProfile ? {
-              user_id: otherUserId,
-              full_name: otherUserProfile.full_name,
-              skill_level: otherUserProfile.skill_level,
-              hackathon_experience: otherUserProfile.hackathon_experience,
-              project_experience: otherUserProfile.project_experience,
-              fun_fact: otherUserProfile.fun_fact,
-              self_description: otherUserProfile.self_description,
-            } : null,
-          };
-        })
-      );
+          processedMutualPartnerIds.add(otherUserId);
+        } else if (record.user_id_1 === userId && record.status === 'interested') {
+          // This is a pending match (current user interested, not yet mutual)
+          responseMatches.push({
+            id: record.id, // Keep as number
+            user_id_1: record.user_id_1,
+            user_id_2: record.user_id_2,
+            status: record.status,
+            created_at: record.created_at,
+            is_mutual_match: false,
+            is_user_interested: true,
+            is_other_interested: false, // Other party hasn't reciprocated this specific 'interested' record
+            other_user: otherUserDetail,
+          });
+        }
+        // We don't add records where record.user_id_2 === userId && record.status === 'interested'
+        // to this list, as those represent interest *from* others *towards* the current user,
+        // which they act upon in their "discover" queue, not view in "my matches" or "my pending interests".
+      }
       
-      console.log('Matches API: Returning formatted matches');
-      return NextResponse.json(formattedMatches);
+      console.log(`Matches API: Returning ${responseMatches.length} processed matches`);
+      return NextResponse.json(responseMatches);
     }
   } catch (error) {
     console.error("Matches API Error:", error);

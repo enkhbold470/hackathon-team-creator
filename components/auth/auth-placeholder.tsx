@@ -66,7 +66,7 @@ export function UserButton() {
           <Link href="/profile">Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/discover">Discover</Link>
+          <Link href="/matches">Matches</Link>
         </DropdownMenuItem>
         {/* <DropdownMenuItem asChild>
           <Link href="/matches">Matches</Link>

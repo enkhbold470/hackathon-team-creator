@@ -39,3 +39,4 @@ experimental/**/*.db
 dev.db
 
 .DS_Store
+applications.json

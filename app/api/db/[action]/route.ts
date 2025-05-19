@@ -44,18 +44,18 @@ export async function POST(
         
         // Save and submit the application in one step
         const submittedApplication = await prisma.application.upsert({
-          where: { userId },
+          where: { user_id: userId },
           update: {
             ...camelCaseData,
             status: 'submitted',
-            updatedAt: new Date(),
+            updated_at: new Date(),
           },
           create: {
-            userId,
+            user_id: userId,
             ...camelCaseData,
             status: 'submitted',
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            created_at: new Date(),
+            updated_at: new Date(),
           }
         });
         
@@ -68,10 +68,10 @@ export async function POST(
       
       case 'confirm-attendance': {
         const updatedApplication = await prisma.application.update({
-          where: { userId },
+          where: { user_id: userId },
           data: {
             status: 'confirmed',
-            updatedAt: new Date(),
+            updated_at: new Date(),
           }
         });
         
@@ -83,10 +83,10 @@ export async function POST(
       
       case 'decline-attendance': {
         const updatedApplication = await prisma.application.update({
-          where: { userId },
+          where: { user_id: userId },
           data: {
             status: 'waitlisted',
-            updatedAt: new Date(),
+            updated_at: new Date(),
           }
         });
         
@@ -135,7 +135,7 @@ export async function GET(
     switch (action) {
       case 'get': {
         const application = await prisma.application.findUnique({
-          where: { userId }
+          where: { user_id: userId }
         });
         
         console.log('Retrieved application:', application);

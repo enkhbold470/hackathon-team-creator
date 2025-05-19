@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
         
         // Check current user's application
         const userApplication = await prisma.application.findUnique({
-          where: { userId }
+          where: { user_id: userId }
         });
         
         return NextResponse.json({
@@ -60,9 +60,9 @@ export async function GET(request: NextRequest) {
             hasApplication: !!userApplication,
             applicationData: userApplication ? {
               id: userApplication.id,
-              skillLevel: userApplication.skillLevel,
-              hackathonExperience: userApplication.hackathonExperience,
-              selfDescription: userApplication.selfDescription,
+              skill_level: userApplication.skill_level,
+              hackathon_experience: userApplication.hackathon_experience,
+              self_description: userApplication.self_description,
             } : null
           }
         });
@@ -97,10 +97,10 @@ export async function GET(request: NextRequest) {
           take: 10,
           select: {
             id: true,
-            userId: true,
-            fullName: true,
-            skillLevel: true,
-            hackathonExperience: true,
+            user_id: true,
+            full_name: true,
+            skill_level: true,
+            hackathon_experience: true,
           }
         });
         

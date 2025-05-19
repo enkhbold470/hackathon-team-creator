@@ -45,7 +45,7 @@ export default function RootLayout({
         {/* </SignedIn> */}
       
       </header>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} disableTransitionOnChange>
           {children}
         </ThemeProvider>
       </body>

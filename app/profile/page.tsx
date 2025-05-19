@@ -31,9 +31,7 @@ export default function ProfilePage() {
           // Get the application data using the user ID
           const appResponse = await fetch(`/api/db?action=get-application&userId=${userData.user.id}`)
           const appData = await appResponse.json()
-          
           console.log("Application data:", appData);
-          
           // Combine user data with application data
           setProfile({
             ...userData.user,
@@ -246,11 +244,11 @@ export default function ProfilePage() {
                 </div>
               </CardContent>
 
-              <CardFooter>
+              {/* <CardFooter>
                 <Button onClick={() => setIsEditing(true)} className="w-full">
                   Edit Profile
                 </Button>
-              </CardFooter>
+              </CardFooter> */}
             </>
           )}
         </Card>

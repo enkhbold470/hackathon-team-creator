@@ -195,7 +195,9 @@ export default function MatchesPage() {
   return (
     <div className="min-h-screen pb-20">
       <header className="p-4 flex justify-between items-center border-b border-border">
-        <h1 className="text-xl font-bold text-primary">Team Builder</h1>
+        <div className="text-xl font-bold text-primary">HackMatch 
+          <span className="text-sm text-muted-foreground font-normal border border-border rounded-full mx-2 px-2 py-1">BETA</span>
+        </div> 
         <UserButton />
       </header>
 

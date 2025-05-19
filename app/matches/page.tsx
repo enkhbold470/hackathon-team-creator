@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { UserButton } from "@/components/auth/auth-placeholder"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ThumbsDown, ThumbsUp, MessageCircle } from "lucide-react"
+
 import { MatchedUser, Match } from "@/lib/types"
 import LoadingComponent from "./components/LoadingComponent"
 import ErrorComponent from "./components/ErrorComponent"

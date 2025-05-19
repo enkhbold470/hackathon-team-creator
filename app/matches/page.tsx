@@ -120,7 +120,7 @@ export default function MatchesPage() {
       <div className="flex flex-col items-center justify-center h-96 text-center">
         <p className="text-xl font-semibold mb-2">{error}</p>
         {error === "User profile not found. Please contact organizers for approval." && (
-          <p>You don't belong here yet! Ask organizers to approve your application.</p>
+          <p>You don't belong here yet! Ask organizers to approve your application. If you're using different email than you used to apply, please contact organizers. inky@deanzahacks.com</p>
         )}
       </div>
     )

@@ -1,11 +1,7 @@
-import { loggedIn } from "@/lib/utils";
-import { redirect } from "next/navigation";
+import { redirect } from "next/navigation"
 
-export default function AuthCheck() {
-  if (!loggedIn) {
-    return redirect("/login");
-  } else {
-    return redirect("/home");
-  }
+export default function Home() {
+  // You can implement your auth check here later
+  // For now, we'll just redirect to the discover page
+  return redirect("/matches")
 }
-

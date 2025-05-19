@@ -105,7 +105,10 @@ export default function ProfilePage() {
       <main className="p-4 max-w-md mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle>ID: {profile?.user_id.slice(10, 15) || "Your Profile"}</CardTitle>
+            {/* <CardTitle>ID: {profile?.user_id.slice(10, 15) || "Your Profile"}</CardTitle> */}
+            <CardTitle>
+              {profile?.full_name || "Your Profile"}
+            </CardTitle>
             <CardDescription>This information will be shown to potential teammates</CardDescription>
           </CardHeader>
 

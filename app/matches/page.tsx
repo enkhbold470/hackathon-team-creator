@@ -24,6 +24,7 @@ export default function MatchesPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("discover")
   const { toast } = useToast()
+
   // Fetch matches
   useEffect(() => {
     const fetchMatches = async () => {
@@ -34,7 +35,12 @@ export default function MatchesPage() {
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Error response from matches API:", errorText);
-          throw new Error(errorText || 'Failed to fetch matches');
+          if (response.status === 404) {
+            setError("User profile not found. Please contact organizers for approval.");
+          } else {
+            throw new Error(errorText || 'Failed to fetch matches');
+          }
+          return; 
         }
         
         const data = await response.json()
@@ -49,17 +55,21 @@ export default function MatchesPage() {
           description: "There was a problem loading your matches. Please try again.",
           variant: "destructive"
         });
+
       } finally {
         setLoading(false)
       }
     }
 
     fetchMatches()
-  }, [])
+  }, []) // toast is not a dependency here as it's stable and setError is also stable
 
   // Fetch potential matches
   useEffect(() => {
     const fetchPotentialMatches = async () => {
+      // If there's already a critical error (like profile not found), don't fetch potentials
+      if (error) return;
+
       try {
         setLoadingPotentials(true);
         console.log('Fetching potential matches from API');
@@ -68,20 +78,29 @@ export default function MatchesPage() {
         if (!response.ok) {
           const errorText = await response.text();
           console.error("Error response from potential matches API:", errorText);
-          throw new Error(errorText || 'Failed to fetch potential matches');
+          // Avoid overwriting a more specific error from the first fetch
+          if (response.status === 404 && !error) { 
+            setError("User profile not found. Please contact organizers for approval.");
+          } else if (!error) { 
+            throw new Error(errorText || 'Failed to fetch potential matches');
+          }
+          return;
         }
         
         const data = await response.json()
         console.log('Potential matches data:', data);
         
         setPotentialMatches(data.potentialMatches || []);
-      } catch (error) {
-        console.error("Error fetching potential matches:", error);
-        toast({
-          title: "Error loading potential matches",
-          description: "There was a problem loading potential matches. Please try again.",
-          variant: "destructive"
-        });
+      } catch (err) { // Changed variable name to avoid conflict with outer 'error' state
+        console.error("Error fetching potential matches:", err);
+        // Only toast if there isn't a more critical error already displayed
+        if (!error) {
+          toast({
+            title: "Error loading potential matches",
+            description: "There was a problem loading potential matches. Please try again.",
+            variant: "destructive"
+          });
+        }
       } finally {
         setLoadingPotentials(false);
       }
@@ -90,7 +109,29 @@ export default function MatchesPage() {
     if (activeTab === "discover") {
       fetchPotentialMatches();
     }
-  }, [activeTab])
+  // error state is a dependency, if it changes (e.g. gets set by first useEffect), this effect might need to react
+  // activeTab is a dependency to refetch when tab changes
+  // toast is a dependency because it's used in the catch block
+  }, [activeTab, error, toast]) 
+
+  // Early returns for loading and error states AFTER all hooks have been called
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96 text-center">
+        <p className="text-xl font-semibold mb-2">{error}</p>
+        {error === "User profile not found. Please contact organizers for approval." && (
+          <p>You don't belong here yet! Ask organizers to approve your application.</p>
+        )}
+      </div>
+    )
+  }
+  
+  if (loading && loadingPotentials && activeTab === 'discover') { // Only show main loading if discover tab is active and its content is loading
+    return <LoadingComponent />;
+  }
+  if (loading && activeTab === 'matches'){ // Show loading for matches tab if matches are still loading
+    return <LoadingComponent />;
+  }
 
   // Handle interest or pass
   const handleAction = async (targetUserId: string, action: 'interested' | 'pass') => {
@@ -149,14 +190,6 @@ export default function MatchesPage() {
       });
     }
   };
-
-  if (loading && loadingPotentials) {
-    return <LoadingComponent />;
-  }
-
-  if (error) {
-    return <ErrorComponent error={error} onRetry={() => window.location.reload()} />;
-  }
 
   const currentPotentialMatch = potentialMatches[currentPotentialMatchIndex];
   const mutualMatches = matches.filter(match => match.is_mutual_match);

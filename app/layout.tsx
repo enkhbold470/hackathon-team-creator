@@ -12,7 +12,7 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 const inter = Inter({ subsets: ["latin"] })
-
+import { Toaster } from "@/components/ui/toaster"
 export const metadata: Metadata = {
   title: "HackMatch - Find Your Perfect Hackathon Teammate",
   description: "Match with the perfect teammates for your next hackathon",
@@ -26,7 +26,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
+
       <body className={inter.className}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} disableTransitionOnChange>
+
       <header className="flex justify-end gap-4">
         <SignedOut>
           <div className="flex gap-2">
@@ -45,10 +48,13 @@ export default function RootLayout({
         {/* </SignedIn> */}
       
       </header>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true} disableTransitionOnChange>
           {children}
-        </ThemeProvider>
+       
+       
+      <Toaster />
+      </ThemeProvider>
       </body>
+
     </html>
     </ClerkProvider>
   )

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { Match } from "@/lib/types";
+import { Match, MatchedUser } from "@/lib/types";
 import { prisma } from "@/lib/prisma";
 
 // Define match interface
@@ -68,6 +68,7 @@ export async function GET(request: NextRequest) {
           project_experience: profile.project_experience,
           fun_fact: profile.fun_fact,
           self_description: profile.self_description,
+          future_plans: profile.future_plans,
         }))
       });
     } else {

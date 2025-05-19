@@ -22,7 +22,8 @@ export default function PendingMatchCard({ match }: PendingMatchCardProps) {
       <Card key={match.id} className="bg-muted">
         <CardHeader>
           {/* name is not showing up */}
-          <CardTitle>{"Potential Teammate ID: " + match.user_id_2.slice(10, 15)}</CardTitle>
+          {/* <CardTitle>{"Potential Teammate ID: " + match.user_id_2.slice(10, 15)}</CardTitle> */}
+          <CardTitle>{otherUser.full_name || "Potential Teammate"}</CardTitle>
           <CardDescription>Waiting for response</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">

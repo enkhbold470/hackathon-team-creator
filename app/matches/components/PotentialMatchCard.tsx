@@ -54,7 +54,11 @@ export default function PotentialMatchCard({
     >
       <Card className="w-full h-full flex flex-col">
         <CardHeader>
-          <CardTitle>{"Potential Teammate ID: " + potentialMatch.user_id.slice(10, 15)}</CardTitle>
+          {/* <CardTitle>{"Potential Teammate ID: " + potentialMatch.user_id.slice(10, 15)}</CardTitle>
+           */}
+          <CardTitle>
+            {potentialMatch?.full_name || "Potential Teammate"}
+          </CardTitle>
           <CardDescription>React the thumb up or down to show interest or pass</CardDescription>
         </CardHeader>
         <CardContent className="flex-grow overflow-auto">

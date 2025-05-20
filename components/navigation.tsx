@@ -4,17 +4,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { UserCircle, Search, Home, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
-
+import Logout from "@/app/profile/components/logout"
 export function Navigation() {
   const pathname = usePathname()
 
   const routes = [
-    // {
-    //   href: "/discover",
-    //   label: "Discover",
-    //   icon: Search,
-    //   active: pathname === "/discover",
-    // },
+
     {
       href: "/",
       label: "Home",
@@ -26,6 +21,12 @@ export function Navigation() {
       label: "Matches",
       icon: Users,
       active: pathname === "/matches",
+    },
+    {
+      href: "/profile",
+      label: "Profile",
+      icon: UserCircle,
+      active: pathname === "/profile",
     },
   ]
 
@@ -45,6 +46,7 @@ export function Navigation() {
             <span className="text-xs mt-1">{route.label}</span>
           </Link>
         ))}
+       
       </div>
     </nav>
   )

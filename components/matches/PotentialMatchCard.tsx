@@ -54,25 +54,13 @@ export default function PotentialMatchCard({
     >
       <Card className="w-full h-full flex flex-col">
         <CardHeader>
-          {/* <CardTitle>{"Potential Teammate ID: " + potentialMatch.user_id.slice(10, 15)}</CardTitle>
-           */}
           <CardTitle>
-            {potentialMatch?.full_name || "Potential Teammate"}
+            {potentialMatch?.user_id ? `Potential Teammate ID: ${potentialMatch.user_id.slice(5,9)}` : "Potential Teammate"}
           </CardTitle>
           <CardDescription>React the thumb up or down to show interest or pass</CardDescription>
         </CardHeader>
         <CardContent className="flex-grow overflow-auto">
           <div className="space-y-4">
-            {/* <div className="flex items-center gap-2">
-              <MessageCircleHeart className="h-5 w-5" />
-              <h3 className="text-sm font-medium">Skill Level</h3>
-            </div>
-            <p>{potentialMatch?.skill_level || "Not specified"}</p> */}
-            {/* <div className="flex items-center gap-2">
-              <MessageCircleHeart className="h-5 w-5" />
-              <h3 className="text-sm font-bold">Hackathon Experience</h3>
-            </div>
-            <p>{potentialMatch?.hackathon_experience || "Not specified"}</p> */}
             <div className="flex items-center gap-2">
               <MessageCircleHeart className="h-5 w-5" />
               <h3 className="text-base font-bold">Project Experience</h3>

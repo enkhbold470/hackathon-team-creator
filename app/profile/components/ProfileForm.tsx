@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Application } from "@prisma/client";
+import { User } from "@prisma/client";
 import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
 
 interface ProfileFormProps {
-  profile: Application | null;
-  setProfile: React.Dispatch<React.SetStateAction<Application | null>>;
+  profile: User | null;
+  setProfile: React.Dispatch<React.SetStateAction<User | null>>;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   setIsEditing: (isEditing: boolean) => void;
 }
@@ -29,40 +30,70 @@ export default function ProfileForm({
       onSubmit={handleSubmit}
     >
       <CardContent className="space-y-4">
-        {/* <div className="space-y-2">
-          <Label htmlFor="skill-level">Skill Level</Label>
-          <Select
-            defaultValue={profile?.skill_level || ""}
-            onValueChange={(value) => setProfile(prev => prev ? ({ ...prev, skill_level: value }) : null)}
-          >
-            <SelectTrigger id="skill-level">
-              <SelectValue placeholder="Select your skill level" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Beginner">Beginner</SelectItem>
-              <SelectItem value="Intermediate">Intermediate</SelectItem>
-              <SelectItem value="Advanced">Advanced</SelectItem>
-            </SelectContent>
-          </Select>
-        </div> */}
+        <div className="space-y-2">
+          <Label htmlFor="full-name">Full Name</Label>
+          <Input
+            id="full-name"
+            placeholder="Enter your full name"
+            defaultValue={profile?.full_name || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), full_name: value } as User));
+            }}
+          />
+        </div>
 
-        {/* <div className="space-y-2">
-          <Label htmlFor="hackathon-experience">Hackathon Experience</Label>
-          <Select
-            defaultValue={profile?.hackathon_experience || ""}
-            onValueChange={(value) => setProfile(prev => prev ? ({ ...prev, hackathon_experience: value }) : null)}
-          >
-            <SelectTrigger id="hackathon-experience">
-              <SelectValue placeholder="Select your experience" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="None">None</SelectItem>
-              <SelectItem value="1-2">1-2 hackathons</SelectItem>
-              <SelectItem value="3-5">3-5 hackathons</SelectItem>
-              <SelectItem value="5+">5+ hackathons</SelectItem>
-            </SelectContent>
-          </Select>
-        </div> */}
+        <div className="space-y-2">
+          <Label htmlFor="discord">Discord</Label>
+          <Input
+            id="discord"
+            placeholder="Enter your Discord username"
+            defaultValue={profile?.discord || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), discord: value } as User));
+            }}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="linkedin">LinkedIn</Label>
+          <Input
+            id="linkedin"
+            placeholder="Enter your LinkedIn profile URL"
+            defaultValue={profile?.linkedin || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), linkedin: value } as User));
+            }}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="instagram">Instagram</Label>
+          <Input
+            id="instagram"
+            placeholder="Enter your Instagram username"
+            defaultValue={profile?.instagram || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), instagram: value } as User));
+            }}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="github">GitHub</Label>
+          <Input
+            id="github"
+            placeholder="Enter your GitHub username"
+            defaultValue={profile?.github || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), github: value } as User));
+            }}
+          />
+        </div>
 
         <div className="space-y-2">
           <Label htmlFor="project-experience">Project Experience</Label>
@@ -70,7 +101,10 @@ export default function ProfileForm({
             id="project-experience"
             placeholder="Describe what is your project experience"
             defaultValue={profile?.project_experience || ""}
-            onChange={(e) => setProfile(prev => prev ? ({ ...prev, project_experience: e.target.value }) : null)}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), project_experience: value } as User));
+            }}
             className="min-h-[100px]"
           />
         </div>
@@ -80,8 +114,11 @@ export default function ProfileForm({
           <Textarea
             id="future-plans"
             placeholder="Describe what you want to build"
-            defaultValue={profile?.future_plans || ""}
-            onChange={(e) => setProfile(prev => prev ? ({ ...prev, future_plans: e.target.value }) : null)}
+            defaultValue={profile?.what_to_build || ""}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), what_to_build: value } as User));
+            }}
             className="min-h-[100px]"
           />
         </div>
@@ -92,7 +129,7 @@ export default function ProfileForm({
           <Label>Self-Description</Label>
           <RadioGroup
             defaultValue={profile?.self_description || ""}
-            onValueChange={(value) => setProfile(prev => prev ? ({ ...prev, self_description: value }) : null)}
+            onValueChange={(value) => setProfile(prev => ({ ...(prev || {}), self_description: value } as User))}
             className="grid grid-cols-2 gap-2"
           >
             <div className="flex items-center space-x-2">
@@ -119,7 +156,10 @@ export default function ProfileForm({
             id="fun-fact"
             placeholder="Share something interesting about yourself"
             defaultValue={profile?.fun_fact || ""}
-            onChange={(e) => setProfile(prev => prev ? ({ ...prev, fun_fact: e.target.value }) : null)}
+            onChange={(e) => {
+              const { value } = e.target;
+              setProfile(prev => ({ ...(prev || {}), fun_fact: value } as User));
+            }}
             className="min-h-[100px]"
           />
         </div>

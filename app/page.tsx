@@ -1,7 +1,34 @@
+"use client"
+import { useState, useEffect } from "react"
+import { getProfile } from "./actions/saveProfile"
 import { redirect } from "next/navigation"
+import { Button } from "@/components/ui/button" // Assuming you have a Button component
+import { User } from "@prisma/client"
 
 export default function Home() {
-  // You can implement your auth check here later
-  // For now, we'll just redirect to the discover page
-  return redirect("/matches")
+  const [profile, setProfile] = useState<User | null>(null)
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const fetchedProfile = await getProfile()
+      setProfile(fetchedProfile as User)
+    }
+    fetchProfile()
+  }, [])
+
+  if (!profile) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen gap-4">
+        <p>You have not created a profile yet</p>
+        <Button onClick={() => redirect('/profile')}>Create Profile</Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1>Welcome, {profile.full_name}!</h1>
+      <p>You can continue using the app</p>
+    </div>
+  )
 }

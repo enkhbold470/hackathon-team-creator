@@ -2,130 +2,110 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Navigation } from "@/components/navigation"
-import { UserButton } from "@/components/auth/auth-placeholder"
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
-import { Application } from "@prisma/client"
+import { User } from "@prisma/client"
 import ProfileForm from "./components/ProfileForm"
 import ProfileDisplay from "./components/ProfileDisplay"
 import LoadingProfile from "./components/LoadingProfile"
+import { getProfile, saveProfile } from "@/app/actions/saveProfile"
 
 export default function ProfilePage() {
+  const [profile, setProfile] = useState<User | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-  const [profile, setProfile] = useState<Application | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
+
   useEffect(() => {
-    const fetchProfile = async () => {
+    async function fetchProfile() {
+      setIsLoading(true)
       try {
-        const userResponse = await fetch("/api/getCurrentUser")
-        const userData = await userResponse.json()
-        setProfile(userData || null)
+        const existingProfile = await getProfile()
+        if (existingProfile) {
+          setProfile(existingProfile)
+          setIsEditing(false)
+        } else {
+          setIsEditing(true)
+        }
       } catch (error) {
+        console.error("Failed to fetch profile:", error)
         toast({
           title: "Error",
-          description: "Could not load profile data.",
+          description: "Failed to load profile data.",
           variant: "destructive",
-        });
-      } finally {
-        setLoading(false)
+        })
+        setIsEditing(true)
       }
+      setIsLoading(false)
     }
-
     fetchProfile()
-  }, [])
+  }, [toast])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!profile || !profile.user_id) {
+    console.log("Profile data being sent from page.tsx:", profile)
+    if (profile) {
+      try {
+        await saveProfile(profile as User)
+        toast({
+          title: "Success!",
+          description: "Your profile has been saved.",
+        })
+        const updatedProfile = await getProfile()
+        if (updatedProfile) setProfile(updatedProfile)
+        setIsEditing(false)
+      } catch (error) {
+        console.error("Failed to save profile:", error)
+        toast({
+          title: "Error",
+          description: "Failed to save profile. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } else {
+      console.error("Attempted to save a null or incomplete profile.")
       toast({
         title: "Error",
-        description: "Profile data or user ID is missing.",
+        description: "Profile data is incomplete. Please fill out the form.",
         variant: "destructive",
-      });
-      return;
-    }
-    
-    try {
-      const requestBody = {
-        action: 'save-application',
-        userId: profile.user_id, 
-        skill_level: profile.skill_level || null,
-        hackathon_experience: profile.hackathon_experience || null,
-        fun_fact: profile.fun_fact || null,
-        self_description: profile.self_description || null,
-        project_experience: profile.project_experience || null,
-      };
-      
-      const response = await fetch('/api/db', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      })
-      
-      
-      if (response.ok) {
-        setIsEditing(false)
-        toast({
-          title: "Profile updated",
-          description: "Your profile has been successfully updated.",
-        })
-        
-        const appResponse = await fetch(`/api/db?action=get-application&userId=${profile.user_id}`);
-        const appData = await appResponse.json();
-        setProfile(prev => prev ? ({ ...prev, ...(appData.application || {}) }) : null);
-      } else {
-        const errorData = await response.json();
-        throw new Error(`Failed to update profile: ${errorData.error || 'Unknown error'}`)
-      }
-    } catch (error) {
-      toast({
-        title: "Update failed",
-        description: typeof error === 'string' ? error : (error as Error).message || "There was an error updating your profile.",
-        variant: "destructive"
       })
     }
   }
 
-  if (loading) {
-    return <LoadingProfile />;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <LoadingProfile />
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen pb-20">
-      <header className="p-4 flex justify-between items-center border-b border-border">
-        <h1 className="text-xl font-bold text-primary">Your Profile</h1>
-        <UserButton />
-      </header>
-
-      <main className="p-4 max-w-md mx-auto">
-        <Card>
-          <CardHeader>
-            {/* <CardTitle>ID: {profile?.user_id.slice(10, 15) || "Your Profile"}</CardTitle> */}
-            <CardTitle>
-              {profile?.full_name || "Your Profile"}
-            </CardTitle>
-            <CardDescription>This information will be shown to potential teammates</CardDescription>
-          </CardHeader>
-
-          {isEditing ? (
-            <ProfileForm 
-              profile={profile} 
-              setProfile={setProfile} 
-              handleSubmit={handleSubmit} 
-              setIsEditing={setIsEditing} 
-            />
-          ) : (
-            <ProfileDisplay profile={profile} setIsEditing={setIsEditing} />
-          )}
-        </Card>
-      </main>
-
-      <Navigation />
+    <div className="container mx-auto py-10 min-h-screen pb-20">
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>{isEditing ? "Edit Profile" : "Your Profile"}</CardTitle>
+          <CardDescription>
+            {isEditing ? "Update your profile information below." : "View your profile information."}
+          </CardDescription>
+        </CardHeader>
+        {isEditing ? (
+          <ProfileForm 
+            profile={profile} 
+            setProfile={setProfile} 
+            handleSubmit={handleSubmit} 
+            setIsEditing={setIsEditing} 
+          />
+        ) : profile ? (
+          <ProfileDisplay 
+            profile={profile} 
+            setIsEditing={setIsEditing} 
+          />
+        ) : (
+          <div className="p-4 text-center">Could not load profile. Try refreshing.</div>
+        )}
+      </Card>
     </div>
   )
 }
+

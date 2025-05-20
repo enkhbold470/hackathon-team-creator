@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { UserCircle, Search } from "lucide-react"
+import { UserCircle, Search, Home, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function Navigation() {
@@ -16,16 +16,16 @@ export function Navigation() {
     //   active: pathname === "/discover",
     // },
     {
-      href: "/matches",
-      label: "Matches",
-      icon: UserCircle,
-      active: pathname === "/matches",
+      href: "/",
+      label: "Home",
+      icon: Home,
+      active: pathname === "/",
     },
     {
-      href: "/profile",
-      label: "Profile",
-      icon: UserCircle,
-      active: pathname === "/profile",
+      href: "/matches",
+      label: "Matches",
+      icon: Users,
+      active: pathname === "/matches",
     },
   ]
 

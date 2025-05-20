@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Match } from "@/lib/types";
 import { motion } from "framer-motion";
+import { MessageCircleHeart } from "lucide-react";
 
 interface PendingMatchCardProps {
   match: Match;
@@ -21,28 +22,30 @@ export default function PendingMatchCard({ match }: PendingMatchCardProps) {
     >
       <Card key={match.id} className="bg-muted">
         <CardHeader>
-          {/* name is not showing up */}
-          {/* <CardTitle>{"Potential Teammate ID: " + match.user_id_2.slice(10, 15)}</CardTitle> */}
-          <CardTitle>{otherUser.full_name || "Potential Teammate"}</CardTitle>
+          <CardTitle>{otherUser.user_id ? `Potential Teammate ID: ${otherUser.user_id.slice(0,4)}` : "Potential Teammate"}</CardTitle>
           <CardDescription>Waiting for response</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
-          <div>
-            <h3 className="text-sm font-medium">Skill Level</h3>
-            <p>{otherUser.skill_level || "Not specified"}</p>
+          <div className="flex items-center gap-2">
+            <MessageCircleHeart className="h-5 w-5" />
+            <h3 className="text-base font-bold">Project Experience</h3>
           </div>
-          <div>
-            <h3 className="text-sm font-medium">Hackathon Experience</h3>
-            <p>{otherUser.hackathon_experience || "Not specified"}</p>
+          <p>{otherUser.project_experience || "Not specified"}</p>
+          <div className="flex items-center gap-2">
+            <MessageCircleHeart className="h-5 w-5" />
+            <h3 className="text-base font-bold">What I want to build</h3>
           </div>
-          <div>
-            <h3 className="text-sm font-medium">About Me</h3>
-            <p>{otherUser.self_description || "Not specified"}</p>
+          <p>{otherUser.future_plans || "Not specified"}</p>
+          <div className="flex items-center gap-2">
+            <MessageCircleHeart className="h-5 w-5" />
+            <h3 className="text-base font-bold">Self-Description</h3>
           </div>
-          <div>
-            <h3 className="text-sm font-medium">Fun Fact</h3>
-            <p>{otherUser.fun_fact || "Not specified"}</p>
+          <p>{otherUser.self_description || "Not specified"}</p>
+          <div className="flex items-center gap-2">
+            <MessageCircleHeart className="h-5 w-5" />
+            <h3 className="text-base font-bold">Fun Fact</h3>
           </div>
+          <p>{otherUser.fun_fact || "Not specified"}</p>
         </CardContent>
       </Card>
     </motion.div>

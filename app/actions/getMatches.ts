@@ -278,7 +278,7 @@ export async function getConfirmedMatches() {
       }
     }));
     
-    return [...confirmedMatches1, ...confirmedMatches2] as Match[];
+    return [...confirmedMatches2] as Match[];
   } catch (error) {
     console.error("Error getting confirmed matches:", error);
     throw new Error("Failed to get confirmed matches");

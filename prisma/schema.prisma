@@ -13,27 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Application {
+model User {
   id                        Int      @id @default(autoincrement())
   user_id                   String   @map("user_id") @unique
-  cwid                      String?
-  full_name                  String?  @map("full_name")
-  discord                   String?
+  email                     String?  @map("email")
+  full_name                 String?  @map("full_name")
+  discord                   String?  @map("discord")
+  linkedin                  String?  @map("linkedin")
+  instagram                 String?  @map("instagram")
+  github                    String?  @map("github")
   skill_level                String?  @map("skill_level")
   hackathon_experience       String?  @map("hackathon_experience")
-  hear_about_us               String?  @map("hear_about_us")
-  why_attend                 String?  @map("why_attend")
   project_experience         String?  @map("project_experience")
-  future_plans               String?  @map("future_plans")
+  what_to_build              String?  @map("what_to_build")
   fun_fact                   String?  @map("fun_fact")
   self_description           String?  @map("self_description")
-  links                     String?
-  teammates                 String?
-  referral_email             String?  @map("referral_email")
-  dietary_restrictions_extra  String?  @map("dietary_restrictions_extra")
-  tshirt_size                String?  @map("tshirt_size")
-  agree_to_terms              Boolean  @default(false) @map("agree_to_terms")
-  status                    String   @default("not_started")
   created_at                 DateTime @default(now()) @map("created_at")
   updated_at                 DateTime @updatedAt @map("updated_at")
   
@@ -53,8 +47,8 @@ model Match {
   updated_at DateTime @updatedAt @map("updated_at")
   
   // Relations
-  user1     Application @relation("User1", fields: [user_id_1], references: [user_id])
-  user2     Application @relation("User2", fields: [user_id_2], references: [user_id])
+  user1     User @relation("User1", fields: [user_id_1], references: [user_id])
+  user2     User @relation("User2", fields: [user_id_2], references: [user_id])
 
   // Ensure that we can't have duplicate matches between the same users
   @@unique([user_id_1, user_id_2])

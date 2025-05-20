@@ -17,7 +17,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
-.env*
+.env
+.env.local
 
 # vercel
 .vercel
@@ -30,7 +31,8 @@ next-env.d.ts
 
 TODO.md
 
-# lib/generated/prisma/
+
+prisma/migrations/
 
 orm/**/migrations/
 misc/**/migrations/
@@ -41,3 +43,4 @@ dev.db
 .DS_Store
 applications.json
 public/workbox-e9849328.js
+public/workbox-8817a5e5.js

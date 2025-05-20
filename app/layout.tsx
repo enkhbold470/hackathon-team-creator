@@ -16,8 +16,9 @@ const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
 // import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 export const metadata: Metadata = {
-  title: "Hackmatch",
+  title: "MatchAnza",
   description: "Find your hackathon team!",
   manifest: "/manifest.json",
   icons: {
@@ -61,7 +62,7 @@ export default function RootLayout({
           >
             <Header />
             {children}
-
+            <Footer />
             {/* <Navigation /> */}
 
             <Toaster />

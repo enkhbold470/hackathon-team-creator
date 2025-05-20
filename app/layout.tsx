@@ -13,7 +13,7 @@ import {
 } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
-import { Navigation } from "@/components/navigation";
+// import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 export const metadata: Metadata = {
   title: "Hackmatch",
@@ -61,7 +61,7 @@ export default function RootLayout({
             <Header />
             {children}
 
-            <Navigation />
+            {/* <Navigation /> */}
 
             <Toaster />
           </ThemeProvider>

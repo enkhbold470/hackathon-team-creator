@@ -191,4 +191,10 @@ function useToast() {
   }
 }
 
+interface ToastOptions {
+  title: string;
+  description?: string;
+  duration?: number;
+}
+
 export { useToast, toast }

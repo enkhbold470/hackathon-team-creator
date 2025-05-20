@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next"
 import type React from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
@@ -66,6 +67,7 @@ export default function RootLayout({
             <Toaster />
           </ThemeProvider>
         </body>
+        <Analytics />
       </html>
     </ClerkProvider>
   );

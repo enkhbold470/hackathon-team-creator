@@ -3,7 +3,7 @@
 A streamlined application for managing hackathon applications and participants.
 
 ## Features
-
+so weird
 - User authentication with Clerk
 - Application submission and management
 - Dynamic form configuration

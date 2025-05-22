@@ -1,4 +1,5 @@
 import withPWA from 'next-pwa';
+import runtimeCaching from "next-pwa/cache.js";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -19,11 +20,14 @@ const nextConfig = {
     optimizeCss: true,
   },
   poweredByHeader: false,
+  swcMinify: true,
+  
 }
 
 export default withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development', // Consider disabling PWA in development for easier debugging
+  runtimeCaching,
+  // disable: process.env.NODE_ENV === 'development', // Consider disabling PWA in development for easier debugging
 })(nextConfig);

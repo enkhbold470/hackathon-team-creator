@@ -14,17 +14,34 @@ import {
 } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
-// import { Navigation } from "@/components/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+
 export const metadata: Metadata = {
   title: "MatchAnza",
   description: "Find your hackathon team!",
-  manifest: "/manifest.json",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+  manifest: "/icons/site.webmanifest",
+  generator: "Next.js",
+  keywords: ["hackathon", "team", "match"],
+  icons: [
+    { rel: "apple-touch-icon", url: "/icons/android-chrome-192x192.png" },
+    { rel: "icon", url: "/icons/android-chrome-192x192.png" },
+  ],
+  themeColor: "#000000",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    minimumScale: 1,
+    viewportFit: "cover"
   },
+  applicationName: "MatchAnza",
+  authors: [
+    { name: "Inky Ganbold" },
+    {
+      name: "Inky Ganbold",
+      url: "https://chat.enk.icu",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -35,24 +52,6 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <head>
-          <meta name="application-name" content="Hackmatch" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta
-            name="apple-mobile-web-app-status-bar-style"
-            content="default"
-          />
-          <meta name="apple-mobile-web-app-title" content="Hackmatch" />
-          <meta name="format-detection" content="telephone=no" />
-          <meta name="mobile-web-app-capable" content="yes" />
-          <meta
-            name="msapplication-config"
-            content="/icons/browserconfig.xml"
-          />
-          <meta name="msapplication-TileColor" content="#000000" />
-          <meta name="msapplication-tap-highlight" content="no" />
-          <meta name="theme-color" content="#000000" />
-        </head>
         <body className={inter.className}>
           <ThemeProvider
             attribute="class"
@@ -63,12 +62,10 @@ export default function RootLayout({
             <Header />
             {children}
             <Footer />
-            {/* <Navigation /> */}
-
             <Toaster />
           </ThemeProvider>
+          <Analytics />
         </body>
-        <Analytics />
       </html>
     </ClerkProvider>
   );

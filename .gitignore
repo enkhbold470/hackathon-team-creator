@@ -42,5 +42,5 @@ dev.db
 
 .DS_Store
 applications.json
-public/workbox-e9849328.js
-public/workbox-8817a5e5.js
+**/public/workbox-*.js
+**/public/sw.js

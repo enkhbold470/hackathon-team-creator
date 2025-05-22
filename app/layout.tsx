@@ -16,6 +16,15 @@ const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  themeColor: 'black',
+  width: 'device-width',
+  initialScale: 1,
+  minimumScale: 1,
+  viewportFit: 'cover',
+}
 
 export const metadata: Metadata = {
   title: "MatchAnza",
@@ -27,13 +36,8 @@ export const metadata: Metadata = {
     { rel: "apple-touch-icon", url: "/icons/android-chrome-192x192.png" },
     { rel: "icon", url: "/icons/android-chrome-192x192.png" },
   ],
-  themeColor: "#000000",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    minimumScale: 1,
-    viewportFit: "cover"
-  },
+
+
   applicationName: "MatchAnza",
   authors: [
     { name: "Inky Ganbold" },

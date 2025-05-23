@@ -26,7 +26,6 @@ export function UserButton() {
           throw new Error('Failed to fetch user')
         }
         const data = await response.json()
-        console.log(data)
 
     
         setCurrentUser(data)

@@ -1,24 +1,30 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { MatchedUser } from "@/lib/types";
 import { motion } from "framer-motion"; // Import framer-motion
-import { MessageCircleHeart } from "lucide-react";
+import { MessageCircleHeart, ThumbsDown, ThumbsUp } from "lucide-react";
 
 interface PotentialMatchCardProps {
   potentialMatch: MatchedUser | undefined;
-  onAction: (targetUserId: string, action: 'interested' | 'pass') => void;
+  onAction: (targetUserId: string, action: "interested" | "pass") => void;
   loading: boolean;
 }
 
 export default function PotentialMatchCard({
   potentialMatch,
   onAction,
-  loading
+  loading,
 }: PotentialMatchCardProps) {
   if (loading) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -28,10 +34,10 @@ export default function PotentialMatchCard({
       </motion.div>
     );
   }
-  
+
   if (!potentialMatch) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -55,9 +61,13 @@ export default function PotentialMatchCard({
       <Card className="w-full h-full flex flex-col">
         <CardHeader>
           <CardTitle>
-            {potentialMatch?.user_id ? `Potential Teammate ID: ${potentialMatch.user_id.slice(5,9)}` : "Potential Teammate"}
+            {potentialMatch?.user_id
+              ? `Potential Teammate ID: ${potentialMatch.user_id.slice(5, 9)}`
+              : "Potential Teammate"}
           </CardTitle>
-          <CardDescription>React the thumb up or down to show interest or pass</CardDescription>
+          <CardDescription>
+            React the thumb up or down to show interest or pass
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow overflow-auto">
           <div className="space-y-4">
@@ -84,22 +94,32 @@ export default function PotentialMatchCard({
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <motion.div whileTap={{ scale: 1.4 }} transition={{ type: "spring", stiffness: 300 }}> {/* Add animation on button press */}
-            <Button 
-              variant="outline" 
+          <motion.div
+            whileTap={{ scale: 1.4 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            {" "}
+            {/* Add animation on button press */}
+            <Button
+              variant="outline"
               size="icon"
               className="rounded-full w-12 h-12"
-              onClick={() => onAction(potentialMatch.user_id, 'pass')}
+              onClick={() => onAction(potentialMatch.user_id, "pass")}
             >
               <ThumbsDown className="h-5 w-5" />
             </Button>
           </motion.div>
-          <motion.div whileTap={{ scale: 1.4 }} transition={{ type: "spring", stiffness: 300 }}> {/* Add animation on button press */}
-            <Button 
-              variant="default" 
+          <motion.div
+            whileTap={{ scale: 1.4 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            {" "}
+            {/* Add animation on button press */}
+            <Button
+              variant="default"
               size="icon"
               className="rounded-full w-12 h-12 bg-green-500 hover:bg-green-600"
-              onClick={() => onAction(potentialMatch.user_id, 'interested')}
+              onClick={() => onAction(potentialMatch.user_id, "interested")}
             >
               <ThumbsUp className="h-5 w-5" />
             </Button>
@@ -108,4 +128,4 @@ export default function PotentialMatchCard({
       </Card>
     </motion.div>
   );
-} 
+}

@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button"
-import { SignOutButton } from '@clerk/nextjs'
-import { LogOut } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@clerk/nextjs";
+import { LogOut } from "lucide-react";
 export default function Logout() {
-
   return (
     <SignOutButton>
       <Button variant="outline" size="icon" className="w-auto p-2 gap-2">
@@ -10,5 +9,5 @@ export default function Logout() {
         <LogOut className="w-4 h-4" />
       </Button>
     </SignOutButton>
-  )
+  );
 }

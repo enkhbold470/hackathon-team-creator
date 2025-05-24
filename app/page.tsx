@@ -1,36 +1,36 @@
-"use client"
-import { useState, useEffect } from "react"
-import { getProfile } from "./actions/saveProfile"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { User } from "@prisma/client"
+"use client";
+import { Button } from "@/components/ui/button";
+import { User } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getProfile } from "./actions/saveProfile";
 
 export default function Home() {
-  const [profile, setProfile] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
+  const [profile, setProfile] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const fetchedProfile = await getProfile()
-        setProfile(fetchedProfile as User)
+        const fetchedProfile = await getProfile();
+        setProfile(fetchedProfile as User);
         if (fetchedProfile) {
           // Redirect to matches if profile exists
-          router.push('/matches')
+          router.push("/matches");
         }
       } catch (error) {
-        console.error('Error fetching profile:', error)
+        console.error("Error fetching profile:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchProfile()
-  }, [router])
+    };
+    fetchProfile();
+  }, [router]);
 
   const handleCreateProfile = () => {
-    router.push('/profile')
-  }
+    router.push("/profile");
+  };
 
   if (isLoading) {
     return (
@@ -38,7 +38,7 @@ export default function Home() {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
         <p>Loading...</p>
       </div>
-    )
+    );
   }
 
   if (!profile) {
@@ -48,7 +48,7 @@ export default function Home() {
         <p>You need to create a profile to get started</p>
         <Button onClick={handleCreateProfile}>Create Profile</Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -56,5 +56,5 @@ export default function Home() {
       <h1 className="text-2xl font-bold">Welcome, {profile?.full_name}!</h1>
       <p>Redirecting you to matches...</p>
     </div>
-  )
+  );
 }

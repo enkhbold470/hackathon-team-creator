@@ -3,17 +3,33 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="py-2 bottom-0 w-full text-sm border-t justify-center flex flex-col items-center">
-      <span>
-        See a bug? Create an{" "}
+      <div className="flex gap-4 mb-1">
+        <Link
+          href="/install"
+          className="underline hover:text-blue-600 transition-colors"
+        >
+          Install App
+        </Link>
+        <span>•</span>
         <Link
           href="https://github.com/enkhbold470/hackathon-team-creator/issues"
           target="_blank"
-          className="underline"
+          className="underline hover:text-blue-600 transition-colors"
         >
-          issue
+          Report Issues
+        </Link>
+      </div>
+      <p>
+        Not getting match? Try on discord{" "}
+        <Link
+          href="https://discord.gg/bJWTS7qem6"
+          className="underline hover:text-blue-600 transition-colors"
+          target="_blank"
+        >
+          #find-a-team
         </Link>{" "}
-        on Github.
-      </span>
+        text channel
+      </p>
     </footer>
   );
 }

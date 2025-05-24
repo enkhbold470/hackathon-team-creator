@@ -1,7 +1,6 @@
 "use client";
 
-import type React from "react";
-import { useState, useEffect } from "react";
+import { getProfile, saveProfile } from "@/app/actions/saveProfile";
 import {
   Card,
   CardDescription,
@@ -10,10 +9,11 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { User } from "@prisma/client";
-import ProfileForm from "./components/ProfileForm";
-import ProfileDisplay from "./components/ProfileDisplay";
-import LoadingProfile from "./components/LoadingProfile";
-import { getProfile, saveProfile } from "@/app/actions/saveProfile";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
+import LoadingProfile from "./components/loading-profile";
+import ProfileDisplay from "./components/profile-display";
+import ProfileForm from "./components/profile-form";
 
 import Logout from "./components/logout";
 
@@ -26,8 +26,10 @@ export default function ProfilePage() {
   useEffect(() => {
     async function fetchProfile() {
       setIsLoading(true);
+
       try {
         const existingProfile = await getProfile();
+
         if (existingProfile) {
           setProfile(existingProfile);
           setIsEditing(false);
@@ -36,33 +38,42 @@ export default function ProfilePage() {
         }
       } catch (error) {
         console.error("Failed to fetch profile:", error);
+
         toast({
           title: "Error",
           description: "Failed to load profile data.",
           variant: "destructive",
         });
+
         setIsEditing(true);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
+
     fetchProfile();
   }, [toast]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Profile data being sent from page.tsx:", profile);
+
     if (profile) {
       try {
         await saveProfile(profile as User);
+
         toast({
           title: "Success!",
           description: "Your profile has been saved.",
         });
+
         const updatedProfile = await getProfile();
+
         if (updatedProfile) setProfile(updatedProfile);
+
         setIsEditing(false);
       } catch (error) {
         console.error("Failed to save profile:", error);
+
         toast({
           title: "Error",
           description: "Failed to save profile. Please try again.",
@@ -71,6 +82,7 @@ export default function ProfilePage() {
       }
     } else {
       console.error("Attempted to save a null or incomplete profile.");
+
       toast({
         title: "Error",
         description: "Profile data is incomplete. Please fill out the form.",
@@ -99,7 +111,6 @@ export default function ProfilePage() {
               ? "Update your profile information below."
               : "View your profile information."}
           </CardDescription>
-          
         </CardHeader>
         {isEditing ? (
           <ProfileForm

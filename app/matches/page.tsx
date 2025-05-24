@@ -1,140 +1,165 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { getPotentialMatches, handleMatchAction, getPendingMatches, getConfirmedMatches } from '../actions/getMatches'
-import PotentialMatchCard from '@/components/matches/PotentialMatchCard'
-import PendingMatchCard from '@/components/matches/PendingMatchCard'
-import MatchCard from '@/components/matches/MatchCard'
-import LoadingComponent from '@/components/matches/LoadingComponent'
-import ErrorComponent from '@/components/matches/ErrorComponent'
-import NoMatchesComponent from '@/components/matches/NoMatchesComponent'
-import { MatchedUser, Match } from '@/lib/types'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Match, MatchedUser } from "@/lib/types";
+import { useEffect, useState } from "react";
+import {
+  getConfirmedMatches,
+  getPendingMatches,
+  getPotentialMatches,
+  handleMatchAction,
+} from "../actions/getMatches";
+import ErrorComponent from "./components/ErrorComponent";
+import LoadingComponent from "./components/LoadingComponent";
+import MatchCard from "./components/MatchCard";
+import NoMatchesComponent from "./components/NoMatchesComponent";
+import PendingMatchCard from "./components/PendingMatchCard";
+import PotentialMatchCard from "./components/PotentialMatchCard";
 
 export default function MatchesPage() {
   // State for potential matches
-  const [potentialMatches, setPotentialMatches] = useState<MatchedUser[]>([])
-  const [currentPotentialMatchIndex, setCurrentPotentialMatchIndex] = useState(0)
-  const [potentialMatchesLoading, setPotentialMatchesLoading] = useState(true)
-  const [potentialMatchesError, setPotentialMatchesError] = useState<string | null>(null)
-  
+  const [potentialMatches, setPotentialMatches] = useState<MatchedUser[]>([]);
+  const [currentPotentialMatchIndex, setCurrentPotentialMatchIndex] =
+    useState(0);
+  const [potentialMatchesLoading, setPotentialMatchesLoading] = useState(true);
+  const [potentialMatchesError, setPotentialMatchesError] = useState<
+    string | null
+  >(null);
+
   // State for pending matches
-  const [pendingMatches, setPendingMatches] = useState<Match[]>([])
-  const [pendingMatchesLoading, setPendingMatchesLoading] = useState(true)
-  const [pendingMatchesError, setPendingMatchesError] = useState<string | null>(null)
-  
+  const [pendingMatches, setPendingMatches] = useState<Match[]>([]);
+  const [pendingMatchesLoading, setPendingMatchesLoading] = useState(true);
+  const [pendingMatchesError, setPendingMatchesError] = useState<string | null>(
+    null
+  );
+
   // State for confirmed matches
-  const [confirmedMatches, setConfirmedMatches] = useState<Match[]>([])
-  const [confirmedMatchesLoading, setConfirmedMatchesLoading] = useState(true)
-  const [confirmedMatchesError, setConfirmedMatchesError] = useState<string | null>(null)
-  
+  const [confirmedMatches, setConfirmedMatches] = useState<Match[]>([]);
+  const [confirmedMatchesLoading, setConfirmedMatchesLoading] = useState(true);
+  const [confirmedMatchesError, setConfirmedMatchesError] = useState<
+    string | null
+  >(null);
+
   // Function to fetch all data
   const fetchAllData = () => {
-    fetchPotentialMatches()
-    fetchPendingMatches()
-    fetchConfirmedMatches()
-  }
-  
+    fetchPotentialMatches();
+    fetchPendingMatches();
+    fetchConfirmedMatches();
+  };
+
   // Fetch potential matches
   const fetchPotentialMatches = async () => {
     try {
-      setPotentialMatchesLoading(true)
-      setPotentialMatchesError(null)
-      const matches = await getPotentialMatches()
-      setPotentialMatches(matches)
-      setCurrentPotentialMatchIndex(0)
+      setPotentialMatchesLoading(true);
+      setPotentialMatchesError(null);
+      const matches = await getPotentialMatches();
+      setPotentialMatches(matches);
+      setCurrentPotentialMatchIndex(0);
     } catch (error) {
-      setPotentialMatchesError('Failed to load potential matches')
-      console.error(error)
+      setPotentialMatchesError("Failed to load potential matches");
+      console.error(error);
     } finally {
-      setPotentialMatchesLoading(false)
+      setPotentialMatchesLoading(false);
     }
-  }
-  
+  };
+
   // Fetch pending matches
   const fetchPendingMatches = async () => {
     try {
-      setPendingMatchesLoading(true)
-      setPendingMatchesError(null)
-      const matches = await getPendingMatches()
-      setPendingMatches(matches)
+      setPendingMatchesLoading(true);
+      setPendingMatchesError(null);
+      const matches = await getPendingMatches();
+      setPendingMatches(matches);
     } catch (error) {
-      setPendingMatchesError('Failed to load pending matches')
-      console.error(error)
+      setPendingMatchesError("Failed to load pending matches");
+      console.error(error);
     } finally {
-      setPendingMatchesLoading(false)
+      setPendingMatchesLoading(false);
     }
-  }
-  
+  };
+
   // Fetch confirmed matches
   const fetchConfirmedMatches = async () => {
     try {
-      setConfirmedMatchesLoading(true)
-      setConfirmedMatchesError(null)
-      const matches = await getConfirmedMatches()
-      setConfirmedMatches(matches)
+      setConfirmedMatchesLoading(true);
+      setConfirmedMatchesError(null);
+      const matches = await getConfirmedMatches();
+      setConfirmedMatches(matches);
     } catch (error) {
-      setConfirmedMatchesError('Failed to load confirmed matches')
-      console.error(error)
+      setConfirmedMatchesError("Failed to load confirmed matches");
+      console.error(error);
     } finally {
-      setConfirmedMatchesLoading(false)
+      setConfirmedMatchesLoading(false);
     }
-  }
-  
+  };
+
   // Handle thumb up/down action for potential matches
-  const handleMatchInteraction = async (targetUserId: string, action: 'interested' | 'pass') => {
+  const handleMatchInteraction = async (
+    targetUserId: string,
+    action: "interested" | "pass"
+  ) => {
     try {
-      await handleMatchAction(targetUserId, action)
-      
+      await handleMatchAction(targetUserId, action);
+
       // Move to next potential match
-      setCurrentPotentialMatchIndex(prev => Math.min(prev + 1, potentialMatches.length))
-      
+      setCurrentPotentialMatchIndex((prev) =>
+        Math.min(prev + 1, potentialMatches.length)
+      );
+
       // Refresh the pending and confirmed matches
-      fetchPendingMatches()
-      fetchConfirmedMatches()
+      fetchPendingMatches();
+      fetchConfirmedMatches();
     } catch (error) {
-      console.error('Error handling match action:', error)
+      console.error("Error handling match action:", error);
     }
-  }
-  
+  };
+
   // Get the current potential match
-  const currentPotentialMatch = potentialMatches.length > 0 && currentPotentialMatchIndex < potentialMatches.length 
-    ? potentialMatches[currentPotentialMatchIndex]
-    : undefined
-    
+  const currentPotentialMatch =
+    potentialMatches.length > 0 &&
+    currentPotentialMatchIndex < potentialMatches.length
+      ? potentialMatches[currentPotentialMatchIndex]
+      : undefined;
+
   // Initial data fetch
   useEffect(() => {
-    fetchAllData()
-  }, [])
+    fetchAllData();
+  }, []);
 
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-6">Find Hackathon Teammates</h1>
-      
+
       <Tabs defaultValue="potential">
         <TabsList className="w-full mb-8">
-          <TabsTrigger value="potential" className="flex-1">Potential Matches</TabsTrigger>
-          <TabsTrigger value="pending" className="flex-1">Pending ({pendingMatches.length})</TabsTrigger>
-          <TabsTrigger value="matched" className="flex-1">Matched ({confirmedMatches.length})</TabsTrigger>
+          <TabsTrigger value="potential" className="flex-1">
+            Potential Matches
+          </TabsTrigger>
+          <TabsTrigger value="pending" className="flex-1">
+            Pending ({pendingMatches.length})
+          </TabsTrigger>
+          <TabsTrigger value="matched" className="flex-1">
+            Matched ({confirmedMatches.length})
+          </TabsTrigger>
         </TabsList>
-        
+
         {/* Potential Matches Tab */}
         <TabsContent value="potential" className="space-y-6">
           {potentialMatchesError ? (
-            <ErrorComponent 
-              error={potentialMatchesError} 
-              onRetry={fetchPotentialMatches} 
+            <ErrorComponent
+              error={potentialMatchesError}
+              onRetry={fetchPotentialMatches}
             />
           ) : potentialMatchesLoading ? (
             <LoadingComponent />
           ) : potentialMatches.length === 0 ? (
-            <NoMatchesComponent 
-              title="No Potential Matches" 
-              message="There are no potential matches available at the moment. Check back later!" 
+            <NoMatchesComponent
+              title="No Potential Matches"
+              message="There are no potential matches available at the moment. Check back later!"
             />
           ) : (
             <div className="max-w-lg mx-auto">
-              <PotentialMatchCard 
+              <PotentialMatchCard
                 potentialMatch={currentPotentialMatch}
                 onAction={handleMatchInteraction}
                 loading={potentialMatchesLoading}
@@ -142,47 +167,47 @@ export default function MatchesPage() {
             </div>
           )}
         </TabsContent>
-        
+
         {/* Pending Matches Tab */}
         <TabsContent value="pending" className="space-y-6">
           {pendingMatchesError ? (
-            <ErrorComponent 
-              error={pendingMatchesError} 
-              onRetry={fetchPendingMatches} 
+            <ErrorComponent
+              error={pendingMatchesError}
+              onRetry={fetchPendingMatches}
             />
           ) : pendingMatchesLoading ? (
             <LoadingComponent />
           ) : pendingMatches.length === 0 ? (
-            <NoMatchesComponent 
-              title="No Pending Matches" 
-              message="You don't have any pending match requests. Start by liking potential matches!" 
+            <NoMatchesComponent
+              title="No Pending Matches"
+              message="You don't have any pending match requests. Start by liking potential matches!"
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pendingMatches.map(match => (
+              {pendingMatches.map((match) => (
                 <PendingMatchCard key={match.id} match={match} />
               ))}
             </div>
           )}
         </TabsContent>
-        
+
         {/* Matched Tab */}
         <TabsContent value="matched" className="space-y-6">
           {confirmedMatchesError ? (
-            <ErrorComponent 
-              error={confirmedMatchesError} 
-              onRetry={fetchConfirmedMatches} 
+            <ErrorComponent
+              error={confirmedMatchesError}
+              onRetry={fetchConfirmedMatches}
             />
           ) : confirmedMatchesLoading ? (
             <LoadingComponent />
           ) : confirmedMatches.length === 0 ? (
-            <NoMatchesComponent 
-              title="No Matches Yet" 
-              message="When you and another person both express interest, you'll see your matches here!" 
+            <NoMatchesComponent
+              title="No Matches Yet"
+              message="When you and another person both express interest, you'll see your matches here!"
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {confirmedMatches.map(match => (
+              {confirmedMatches.map((match) => (
                 <MatchCard key={match.id} match={match} />
               ))}
             </div>
@@ -190,5 +215,5 @@ export default function MatchesPage() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

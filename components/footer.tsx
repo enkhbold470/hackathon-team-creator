@@ -20,15 +20,15 @@ export function Footer() {
         </Link>
       </div>
       <p>
-        Not getting match? Try on discord{" "}
+        Not getting a match? Try finding one on our{" "}
         <Link
           href="https://discord.gg/bJWTS7qem6"
           className="underline hover:text-blue-600 transition-colors"
           target="_blank"
         >
-          #find-a-team
-        </Link>{" "}
-        text channel
+          Discord
+        </Link>
+        !
       </p>
     </footer>
   );

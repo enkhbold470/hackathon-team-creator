@@ -1,15 +1,16 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion } from "@/lib/framer-motion-facade";
+import { useRouter } from "next/navigation";
 
 interface ErrorComponentProps {
   error: string | null;
-  onRetry: () => void;
 }
 
-export default function ErrorComponent({
-  error,
-  onRetry,
-}: ErrorComponentProps) {
+export default function ErrorComponent({ error }: ErrorComponentProps) {
+  const router = useRouter();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -20,7 +21,7 @@ export default function ErrorComponent({
       <div className="text-center">
         <h2 className="text-xl font-medium mb-2">Error</h2>
         <p className="text-muted-foreground">{error}</p>
-        <Button onClick={onRetry} className="mt-4">
+        <Button onClick={() => router.refresh()} className="mt-4">
           Try Again
         </Button>
       </div>

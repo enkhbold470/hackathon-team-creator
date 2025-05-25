@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,12 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MatchedUser } from "@/lib/types";
-import { motion } from "framer-motion"; // Import framer-motion
+import { motion } from "@/lib/framer-motion-facade";
+import type { MatchedUser } from "@/lib/types";
 import { MessageCircleHeart, ThumbsDown, ThumbsUp } from "lucide-react";
 
 interface PotentialMatchCardProps {
-  potentialMatch: MatchedUser | undefined;
+  potentialMatch: MatchedUser;
   onAction: (targetUserId: string, action: "interested" | "pass") => void;
   loading: boolean;
 }
@@ -31,22 +33,6 @@ export default function PotentialMatchCard({
         className="flex items-center justify-center h-96"
       >
         <p>Finding potential teammates...</p>
-      </motion.div>
-    );
-  }
-
-  if (!potentialMatch) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="flex flex-col items-center justify-center h-96 text-center"
-      >
-        <h2 className="text-xl font-medium mb-2">No more potential matches</h2>
-        <p className="text-muted-foreground">
-          Check back later for more potential teammates.
-        </p>
       </motion.div>
     );
   }

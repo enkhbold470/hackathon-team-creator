@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "react", "react-dom", "@prisma/client"],
+    "types": ["node", "react", "react-dom", "@prisma/client", "vitest/globals"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "target": "ESNext",
@@ -20,8 +20,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-
+      "@/*": ["./*"]
     }
   },
   "include": [

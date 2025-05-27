@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Match } from "@/lib/types";
+import type { Match } from "@/lib/types";
 import { currentUser } from "@clerk/nextjs/server";
 
 // Function to get potential matches (users you haven't interacted with yet)

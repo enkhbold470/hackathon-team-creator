@@ -27,7 +27,7 @@ overrides:
   picomatch@2: ^2.3.2
   picomatch@4: ^4.0.7
   postcss: ^8.5.29
-  postcss-selector-parser@6: ^6.1.4
+  postcss-selector-parser: ^7.1.6
   rollup@2: ^2.80.0
   rollup@4: ^4.64.1
   serialize-javascript: ^7.1.2
@@ -4300,8 +4300,8 @@ packages:
     peerDependencies:
       postcss: ^8.5.29
 
-  postcss-selector-parser@6.1.4:
-    resolution: {integrity: sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ==}
+  postcss-selector-parser@7.1.6:
+    resolution: {integrity: sha512-7qASPzhKF2l2KLboRZux8CCTRMdGiV08vWmyKzPz22qZ7ZjQBOeY7rNzNoCLSUiftJ7HUq0GERHmxw/t0dCdMw==}
     engines: {node: '>=4'}
 
   postcss-value-parser@4.2.0:
@@ -9568,9 +9568,9 @@ snapshots:
   postcss-nested@6.2.0(postcss@8.5.29):
     dependencies:
       postcss: 8.5.29
-      postcss-selector-parser: 6.1.4
+      postcss-selector-parser: 7.1.6
 
-  postcss-selector-parser@6.1.4:
+  postcss-selector-parser@7.1.6:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
@@ -10162,7 +10162,7 @@ snapshots:
       postcss-js: 4.0.1(postcss@8.5.29)
       postcss-load-config: 4.0.2(postcss@8.5.29)(ts-node@10.9.2(@types/node@22.15.14)(typescript@5.8.3))
       postcss-nested: 6.2.0(postcss@8.5.29)
-      postcss-selector-parser: 6.1.4
+      postcss-selector-parser: 7.1.6
       resolve: 1.22.10
       sucrase: 3.35.0
     transitivePeerDependencies:

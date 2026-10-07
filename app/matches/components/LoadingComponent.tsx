@@ -1,3 +1,5 @@
+"use client";
+
 import { motion } from "@/lib/framer-motion-facade";
 
 export default function LoadingComponent() {
